@@ -5,6 +5,6 @@ use std::fmt::{Debug, Display};
 pub fn result_cast_to_io_result<T,E : Debug + Display >(res : Result<T,E>) -> io::Result<T> {
     match res {
         Ok(ok) => Ok(ok),
-        Err(err) => Err(io::Error::new(io::ErrorKind::InvalidData, format!("result_cast_to_io_result - {}", err)))
+        Err(err) => Err(io::Error::new(io::ErrorKind::Other, format!("result_cast_to_io_result - {}", err)))
     }
 }
