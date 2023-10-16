@@ -4,7 +4,7 @@ use std::fs;
 use crate::utils::result::result_cast_to_io_result;
 use crate::utils::option::opt_cast_to_io_result;
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct  Tcp4Stat {
     pub local_addr_hex : String,
     pub remote_addr_hex : String,
@@ -16,8 +16,8 @@ pub struct  Tcp4Stat {
     pub rto : u64,
     pub uid : u32,
     pub zero_window_probes : u8,
-    /*
-        - inode
+    pub inode : u64,
+    /* 
         - socket reference count
         - location of socket in memory
         - retransmit timeout
@@ -89,6 +89,9 @@ pub fn read_tcp_stats() -> io::Result<Vec<Tcp4Stat>> {
                 opt_cast_to_io_result(tok.next(),"zero window probes is null")?,
                  16)
         )?;
+        let inode = result_cast_to_io_result(
+            u64::from_str_radix(opt_cast_to_io_result(tok.next(),"inode is null")?,10)
+        )?;
 
         let etc = tok.fold(String::new(), |mut acc: String, x| {
             acc.push_str(" ");
@@ -107,7 +110,8 @@ pub fn read_tcp_stats() -> io::Result<Vec<Tcp4Stat>> {
             rto,
             uid,
             zero_window_probes,
-            etc,
+            inode,
+            etc
         };
         v.push(ele);
     }
@@ -126,6 +130,7 @@ impl Default for Tcp4Stat {
             rto: 0,
             uid: 0,
             zero_window_probes: 0,
+            inode : 0,
             etc: String::new()
         }
     }

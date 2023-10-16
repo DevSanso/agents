@@ -4,7 +4,7 @@ use std::fs;
 use crate::utils::option::opt_cast_to_io_result;
 use crate::utils::result::result_cast_to_io_result;
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct ArpInfo {
     pub ip_address: String,
     pub hw_type: u32,
@@ -25,7 +25,7 @@ impl Default for ArpInfo {
     }
 }
 
-pub fn reead_arp_info() -> io::Result<Vec<ArpInfo>> {
+pub fn read_arp_info() -> io::Result<Vec<ArpInfo>> {
     const PATH : &str = "/proc/net/arp";
     let file = fs::read_to_string(PATH)?;
     let data = file

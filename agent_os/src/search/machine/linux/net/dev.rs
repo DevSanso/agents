@@ -3,6 +3,7 @@ use std::fs;
 
 use crate::utils::result::result_cast_to_io_result;
 
+#[derive(Debug,Clone)]
 pub struct NetDevInfo {
     pub interface: String,
     pub rx_bytes: u64,

@@ -4,6 +4,7 @@ use std::fs;
 use crate::utils::option::opt_cast_to_io_result;
 use crate::utils::result::result_cast_to_io_result;
 
+#[derive(Debug,Clone)]
 pub struct SockStatInfo {
     pub use_count : u64,
     pub in_use : u64,
