@@ -1,3 +1,6 @@
 pub mod search;
-pub(crate) mod utils;
+pub mod utils;
 pub mod ipc;
+pub mod buffer;
+pub mod task;
+pub mod config;

@@ -3,12 +3,8 @@ use std::iter::Iterator;
 
 pub mod mmap;
 
-pub trait IpcSequence {
-    fn current(&self) -> Box<dyn Iterator<Item = u8>>;
-    fn next(&mut self) ->Box<dyn Iterator<Item = u8>>;
-}
 pub trait IpcListener {
-    fn get_stream(&mut self) -> io::Result<Box<dyn IpcSendStream>>;
+    fn get_stream(&mut self) -> io::Result<Box<dyn IpcSendStream + Send>>;
 }
 pub trait IpcSendStream {
     fn send(&mut self, data : &'_ [u8]) -> io::Result<()>;
@@ -31,14 +27,5 @@ pub fn new_listener(kind : ListenerKind) -> io::Result<Box<dyn IpcListener>> {
         ListenerKind::Mmap(p, size) => mmap::MmapListener::new(p, size)
     }?;
 
-        Ok(Box::new(l))
-}
-pub enum SequenceKind {
-    Mmap(u64)
-}
-
-pub fn new_seq(kind : SequenceKind) -> Box<dyn IpcSequence> {
-    match kind {
-        SequenceKind::Mmap(start) => Box::new(mmap::MmapSequence::new(start))
-    }
+    Ok(Box::new(l))
 }

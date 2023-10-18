@@ -7,14 +7,13 @@ use agent_os::ipc::new_listener;
 use agent_os::ipc::ListenerKind;
 
 use agent_os::ipc::make_format;
-use agent_os::ipc::SequenceKind;
-use agent_os::ipc::new_seq;
-
+use agent_os::utils::seq::new_seq;
+use agent_os::utils::seq::SequenceKind;
 #[test]
 pub fn ipc_mmap_write_test() -> io::Result<()>{
     const MSG : &str= "hello world!";
     
-    let mut seq = new_seq(SequenceKind::Mmap(1));
+    let mut seq = new_seq(SequenceKind::U64(0));
     
     let mut output = make_format(seq.next(), MSG.as_bytes());
     let mut output2 = make_format(seq.next(), MSG.as_bytes());

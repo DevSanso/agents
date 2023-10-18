@@ -7,34 +7,11 @@ use memmap2;
 
 use crate::ipc::make_format;
 use crate::utils::result::result_cast_to_io_result;
-use crate::ipc::{IpcSequence, IpcListener, IpcSendStream};
-
-pub struct MmapSequence {
-    current_val : Mutex<u64>
-}
-
-impl MmapSequence {
-    pub(crate) fn new(start : u64) -> Self {
-        MmapSequence { current_val:Mutex::new(start) }
-    }
-}
-
-impl IpcSequence for MmapSequence {
-    fn current(&self) -> Box<dyn Iterator<Item = u8>> {
-        let g = self.current_val.lock().unwrap();
-        Box::new(g.to_le_bytes().into_iter())
-    }
-
-    fn next(&mut self) ->Box<dyn Iterator<Item = u8>> {
-        let mut g = self.current_val.lock().unwrap();
-        let ret = Box::new(g.to_le_bytes().into_iter());
-        *g = *g + 1;
-        ret
-    }
-}
+use crate::ipc::{IpcListener, IpcSendStream};
+use crate::utils::seq::{new_seq, Sequence, SequenceKind};
 
 pub struct MmapListener {
-    writer : Arc<Mutex<(memmap2::MmapMut, MmapSequence)>>,
+    writer : Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>,
     file_size : usize
 }
 
@@ -50,15 +27,15 @@ impl MmapListener {
         file.set_len(file_size)?;
 
         let mmap = unsafe { memmap2::MmapMut::map_mut(&file)? };
-        let seq = MmapSequence::new(1);
+        let seq = new_seq(SequenceKind::U64(0));
         
-        let field: Arc<Mutex<(memmap2::MmapMut, MmapSequence)>> = Arc::new(Mutex::new((mmap,seq)));
+        let field: Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>> = Arc::new(Mutex::new((mmap,seq)));
         Ok(MmapListener { writer: field , file_size : file_size as usize})
     }
 }
 
 impl IpcListener for MmapListener {
-    fn get_stream(&mut self) -> std::io::Result<Box<dyn super::IpcSendStream>> {
+    fn get_stream(&mut self) -> std::io::Result<Box<dyn super::IpcSendStream + Send>> {
         let clone_arc = Arc::clone(&self.writer);
 
         Ok({
@@ -68,11 +45,14 @@ impl IpcListener for MmapListener {
 }
 
 pub struct MmapSendStream {
-    f : Arc<Mutex<(memmap2::MmapMut, MmapSequence)>>,
+    f : Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>,
     file_size: usize
 }
+
+unsafe impl Send for MmapSendStream {}
+
 impl MmapSendStream {
-    pub(crate) fn new(arc :  Arc<Mutex<(memmap2::MmapMut, MmapSequence)>>, size : usize) -> Self {
+    pub(crate) fn new(arc :  Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>, size : usize) -> Self {
         MmapSendStream { f:arc, file_size : size }
     }
 }
