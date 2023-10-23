@@ -1,9 +1,6 @@
 mod ipc_send_task;
-pub trait Task<'a> {
-    fn start(&mut self);
-    fn kill(&mut self);
-    fn stop(&mut self);
-    fn reflesh(&mut self);
-}
+mod net_stat_task;
 
-pub use ipc_send_task::new_ipc_send_task;
+pub use ipc_send_task::ipc_send_thread_gen;
+pub use net_stat_task::os_details_net_stat_thread_gen;
+pub use net_stat_task::total_net_stat_thread_gen;

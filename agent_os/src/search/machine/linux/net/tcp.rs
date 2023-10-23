@@ -1,10 +1,12 @@
 use std::io;
 use std::fs;
 
+use serde::Serialize;
+
 use crate::utils::result::result_cast_to_io_result;
 use crate::utils::option::opt_cast_to_io_result;
 
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Serialize)]
 pub struct  Tcp4Stat {
     pub local_addr_hex : String,
     pub remote_addr_hex : String,

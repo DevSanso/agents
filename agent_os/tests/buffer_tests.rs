@@ -1,6 +1,11 @@
 use std::io;
-use agent_os::buffer::new_buffer;
-use agent_os::buffer::BufferKind;
+use std::sync::Arc;
+
+use agent_os::buffer::DoubleBuffer;
+use agent_os::buffer::BufferAdder;
+use agent_os::buffer::BufferController;
+use agent_os::buffer::BufferReader;
+use agent_os::utils::result::result_cast_to_io_result;
 
 #[derive(Clone)]
 struct TestData {
@@ -9,8 +14,8 @@ struct TestData {
 }
 #[test]
 pub fn ipc_mmap_write_test() -> io::Result<()>{
-    let mut b = new_buffer::<TestData>(BufferKind::DoubleBuffer);
-
+    let mut origin = DoubleBuffer::<TestData>::new();
+    let mut b = result_cast_to_io_result(origin.lock())?;
     for i in 0..10000 {
         b.add(TestData {index : i % 100, text : String::from("text")})?;
     }

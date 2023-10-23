@@ -10,6 +10,7 @@ use crate::utils::result::result_cast_to_io_result;
 use crate::ipc::{IpcListener, IpcSendStream};
 use crate::utils::seq::{new_seq, Sequence, SequenceKind};
 
+
 pub struct MmapListener {
     writer : Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>,
     file_size : usize
@@ -35,7 +36,7 @@ impl MmapListener {
 }
 
 impl IpcListener for MmapListener {
-    fn get_stream(&mut self) -> std::io::Result<Box<dyn super::IpcSendStream + Send>> {
+    fn get_stream(&mut self) -> std::io::Result<Box<dyn super::IpcSendStream + Send + Sync>> {
         let clone_arc = Arc::clone(&self.writer);
 
         Ok({
@@ -44,12 +45,16 @@ impl IpcListener for MmapListener {
     }
 }
 
+unsafe impl Send for MmapListener {}
+unsafe impl Sync for MmapListener {}
+
 pub struct MmapSendStream {
     f : Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>,
     file_size: usize
 }
 
 unsafe impl Send for MmapSendStream {}
+unsafe impl Sync for MmapSendStream {}
 
 impl MmapSendStream {
     pub(crate) fn new(arc :  Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>, size : usize) -> Self {

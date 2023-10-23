@@ -1,50 +1,63 @@
+use std::sync::Arc;
 use std::sync::Mutex;
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering::Relaxed;
 
-use crate::buffer::Buffer;
+use crate::buffer;
+
 use crate::utils::result::result_cast_to_io_result;
 
 pub struct DoubleBuffer<T> {
-    w_index : usize,
-    r_index : usize,
+    w_index : AtomicUsize,
+    r_index : AtomicUsize,
 
     slices : [Vec<T>;2],
-    m : Mutex<()>
 }
 
-unsafe impl<T> Send for DoubleBuffer<T> {}
-unsafe impl<T> Sync for DoubleBuffer<T> {}
-
-impl<T : Clone> DoubleBuffer<T> {
-    pub fn new() -> Self {
-        DoubleBuffer { w_index: 0, r_index: 1, slices: [Vec::new(), Vec::new()], m: Mutex::new(()) }
-    }
-}
-
-impl<T : Clone> Buffer<T> for DoubleBuffer<T> {
-    fn swtich(&mut self) -> std::io::Result<()> {
-        let g = result_cast_to_io_result(self.m.lock())?;
-        let temp = self.w_index;
-        self.w_index = self.r_index;
-        self.r_index = temp;
-        drop(g);
-
-        Ok(())
-    }
-
+impl <T: Clone> buffer::BufferAdder<T> for DoubleBuffer<T>{
     fn add(&mut self, data : T) -> std::io::Result<()> {
-        let g = result_cast_to_io_result(self.m.lock())?;
-        let w = &mut self.slices[self.w_index];
-        w.push(data);
-        drop(g);
 
+        self.slices[self.w_index .load(Relaxed)].push(data);
+        Ok(())
+
+    }
+}
+impl <T:Clone> buffer::BufferControllerAndReader<T> for DoubleBuffer<T> {
+    fn read(&self) -> std::io::Result<Vec<T>> {
+        Ok(self.slices[self.r_index.load(Relaxed)].clone())
+    }
+
+    fn swtich(&mut self) -> std::io::Result<()> {
+        let w = self.w_index.load(Relaxed);
+        self.w_index.swap(self.r_index.swap(w, Relaxed), Relaxed);
         Ok(())
     }
-    
-    fn read(&mut self) -> std::io::Result<Vec<T>> {
-        let g = result_cast_to_io_result(self.m.lock())?;
-        let r = self.slices[self.r_index].clone();
-        drop(g);
+}
 
-        Ok(r)
+
+impl <T: Clone> buffer::BufferReader<T> for DoubleBuffer<T> {
+    fn read(&self) -> std::io::Result<Vec<T>> {
+        Ok(self.slices[self.r_index.load(Relaxed)].clone())
     }
+}
+
+impl <T: Clone> buffer::BufferController<T> for DoubleBuffer<T> {
+    fn swtich(&mut self) -> std::io::Result<()> {
+        let w = self.w_index.load(Relaxed);
+        self.w_index.swap(self.r_index.swap(w, Relaxed), Relaxed);
+        Ok(())
+    }
+}
+
+unsafe impl<T : Clone> Send for DoubleBuffer<T> {}
+unsafe impl<T : Clone> Sync for DoubleBuffer<T> {}
+
+impl<T : Clone > DoubleBuffer<T > {
+    pub fn new() -> Arc<Mutex<DoubleBuffer< T >>>{
+        let o = DoubleBuffer::<T> {
+            w_index: AtomicUsize::new(0), r_index: AtomicUsize::new(1), slices: [Vec::new(), Vec::new()]
+        }; 
+        Arc::new(Mutex::new(o))
+    }
+
 }

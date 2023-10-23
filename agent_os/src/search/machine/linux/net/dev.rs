@@ -1,9 +1,11 @@
 use std::io;
 use std::fs;
 
+use serde::Serialize;
+
 use crate::utils::result::result_cast_to_io_result;
 
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Serialize)]
 pub struct NetDevInfo {
     pub interface: String,
     pub rx_bytes: u64,
