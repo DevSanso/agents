@@ -65,7 +65,6 @@ impl MmapSendStream {
 impl IpcSendStream for MmapSendStream {
     fn send(&mut self, data : &'_ [u8]) -> std::io::Result<()> {
         let mut g = result_cast_to_io_result(self.f.lock())?;
-        
         let origin = make_format(g.1.next(), data);
         let msg : Vec<u8> = (|| {
             let mut ext = origin.clone();

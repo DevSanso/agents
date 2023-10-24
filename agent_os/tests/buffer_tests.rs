@@ -15,7 +15,7 @@ struct TestData {
 #[test]
 pub fn ipc_mmap_write_test() -> io::Result<()>{
     let mut origin = DoubleBuffer::<TestData>::new();
-    let mut b = result_cast_to_io_result(origin.lock())?;
+    let mut b = result_cast_to_io_result(origin.write())?;
     for i in 0..10000 {
         b.add(TestData {index : i % 100, text : String::from("text")})?;
     }

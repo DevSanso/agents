@@ -4,12 +4,12 @@ pub mod buffer;
 pub mod task;
 pub mod config;
 pub mod utils;
-
+pub mod pool;
 use std::env;
 use std::error::Error;
 
 fn main() -> Result<(),Box<dyn Error>> {
-    //let args = env::args();
+    let args = env::args();
 
     //let config = config::read_config(args[1])?;
 

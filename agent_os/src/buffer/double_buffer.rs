@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use std::sync::Mutex;
+use std::sync::RwLock;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::Relaxed;
 
@@ -53,11 +53,11 @@ unsafe impl<T : Clone> Send for DoubleBuffer<T> {}
 unsafe impl<T : Clone> Sync for DoubleBuffer<T> {}
 
 impl<T : Clone > DoubleBuffer<T > {
-    pub fn new() -> Arc<Mutex<DoubleBuffer< T >>>{
+    pub fn new() -> Arc<RwLock<DoubleBuffer< T >>>{
         let o = DoubleBuffer::<T> {
             w_index: AtomicUsize::new(0), r_index: AtomicUsize::new(1), slices: [Vec::new(), Vec::new()]
         }; 
-        Arc::new(Mutex::new(o))
+        Arc::new(RwLock::new(o))
     }
 
 }
