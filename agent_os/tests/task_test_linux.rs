@@ -12,32 +12,32 @@ use bson::Bson;
 
 #[test]
 fn ipc_send_task_test() {
-    const path : &str = "/tmp/.task_test_linux.snap";
-    let mut b  = DoubleBuffer::<(String,Bson)>::new();
+    const PATH : &str = "/tmp/.task_test_linux.snap";
+    let b  = DoubleBuffer::<(String,Bson)>::new();
 
-    let mut tp = thraed_pool::ThreadPool::new(20);
+    let tp = thraed_pool::ThreadPool::new(20);
     
     let mut i = 0;
     loop {
         i += 1;
         let mut addr = b.write().unwrap();
 
-        addr.add((String::from("test1"),Bson::Int32(12)));
-        addr.add((String::from("test2"),Bson::Int32(12)));
-        addr.add((String::from("test3"),Bson::Int32(i)));
+        let _ = addr.add((String::from("test1"),Bson::Int32(12)));
+        let _ = addr.add((String::from("test2"),Bson::Int32(12)));
+        let _ = addr.add((String::from("test3"),Bson::Int32(i)));
         drop(addr);
 
         thread::sleep(std::time::Duration::from_secs(1));
 
         let r = Arc::clone(&b);
 
-        let l =new_listener(agent_os::ipc::ListenerKind::Mmap(String::from(path), 256)).unwrap();
+        let mut l =new_listener(agent_os::ipc::ListenerKind::Mmap(String::from(PATH), 256)).unwrap();
     
-        let fun = ipc_send_task_gen(l,r);
+        let fun = ipc_send_task_gen(l.get_stream().unwrap(),r);
         
         {
             let mut g = tp.lock().unwrap();
-            g.use_item((), fun);
+            let _ = g.use_item((), fun);
         }
     }
     

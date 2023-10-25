@@ -5,8 +5,6 @@ use std::sync::atomic::Ordering::Relaxed;
 
 use crate::buffer;
 
-use crate::utils::result::result_cast_to_io_result;
-
 pub struct DoubleBuffer<T> {
     w_index : AtomicUsize,
     r_index : AtomicUsize,

@@ -1,4 +1,4 @@
-use std::sync::{Mutex,Arc};
+use std::sync::Mutex;
 
 use crate::utils::seq::Sequence;
 

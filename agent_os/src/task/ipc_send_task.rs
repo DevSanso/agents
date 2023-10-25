@@ -5,19 +5,17 @@ use bson::Bson;
 use zstd;
 
 use crate::buffer::BufferControllerAndReader;
-use crate::ipc::IpcListener;
+use crate::ipc::IpcSendStream;
 use crate::utils::result::result_change_err_is_string;
 
 pub fn ipc_send_task_gen(
-    mut listen: Box<dyn IpcListener + Sync + Send>,
+    mut stream: Box<dyn IpcSendStream + Sync + Send>,
     buf: Arc<RwLock<dyn BufferControllerAndReader<(String, Bson)> + Send + Sync>>,
 ) -> impl FnOnce(()) -> Result<(), String> + Send {
 
     let func = move |()| -> Result<(), String> {
 
         let controller = buf;
-
-        let mut stream = result_change_err_is_string(listen.get_stream())?;
 
         let mut g = result_change_err_is_string(controller.write())?;
 

@@ -10,7 +10,7 @@ use crate::utils::result::result_change_err_is_string;
 pub fn total_net_stat_thread_gen(
     buf: Arc<RwLock<dyn BufferAdder<(String, Bson)> + Sync + Send>>,
 ) -> impl FnOnce(()) -> Result<(), String> + Send {
-    let fun = move |tup| -> Result<(), String> {
+    let fun = move |_tup| -> Result<(), String> {
         let search = result_change_err_is_string(get_machine())?;
         let addr = buf;
         {
@@ -39,7 +39,7 @@ pub fn total_net_stat_thread_gen(
 pub fn os_details_net_stat_thread_gen(
     buf: Arc<RwLock<dyn BufferAdder<(String, Bson)> + Sync + Send>>,
 ) -> impl FnOnce(()) -> Result<(), String> + Send {
-    let fun = move |tup| -> Result<(), String> {
+    let fun = move |_tup| -> Result<(), String> {
         let search = result_change_err_is_string(get_machine())?;
         let addr = buf;
 

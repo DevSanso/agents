@@ -4,6 +4,8 @@ use std::sync::{Mutex, Arc};
 use crate::pool;
 
 type ThreadItem = Option<JoinHandle<Result<(),String>>>;
+
+#[derive(Debug)]
 pub struct ThreadPool {
     max : usize,
     thread_p : Vec<ThreadItem>
@@ -24,7 +26,7 @@ impl ThreadPool {
 
             let ele = self.thread_p.get_mut(i).unwrap();
             let j = ele.take().unwrap();
-            j.join();
+            let _ = j.join();
             
             self.thread_p[i] = None;
         }
