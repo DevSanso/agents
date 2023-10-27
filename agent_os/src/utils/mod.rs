@@ -11,4 +11,5 @@ pub mod result {
 }
 
 pub mod seq;
+pub mod format;
 

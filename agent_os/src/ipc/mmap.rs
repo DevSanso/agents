@@ -2,14 +2,14 @@ use std::sync::{Mutex,Arc};
 use std::fs::OpenOptions;
 use std::io;
 use std::path::Path;
+use std::io::Write;
 
 use memmap2;
 
-use crate::ipc::make_format;
 use crate::utils::result::result_cast_to_io_result;
 use crate::ipc::{IpcListener, IpcSendStream};
 use crate::utils::seq::{new_seq, Sequence, SequenceKind};
-
+use crate::utils::format::make_format;
 
 pub struct MmapListener {
     writer : Arc<Mutex<(memmap2::MmapMut, Box<dyn Sequence>)>>,
@@ -22,6 +22,7 @@ impl MmapListener {
         .read(true)
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&path);
         
         let file = result_cast_to_io_result(file_res)?;
@@ -65,13 +66,10 @@ impl MmapSendStream {
 impl IpcSendStream for MmapSendStream {
     fn send(&mut self, data : &'_ [u8]) -> std::io::Result<()> {
         let mut g = result_cast_to_io_result(self.f.lock())?;
-        let origin = make_format(g.1.next(), data);
-        let msg : Vec<u8> = (|| {
-            let mut ext = origin.clone();
-            ext.resize(self.file_size, 0);
-            ext
-        })();
-        g.0.copy_from_slice(msg.as_slice());
+        let mut origin = make_format(data.len(), g.1.next(), data);
+        origin.resize(self.file_size, 0);
+
+        g.0.copy_from_slice(origin.as_slice());
         Ok(())
     }
 }

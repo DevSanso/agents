@@ -15,7 +15,9 @@ impl U64Sequence {
 impl Sequence for U64Sequence {
     fn current(&self) -> Box<dyn Iterator<Item = u8>> {
         let g = self.current_val.lock().unwrap();
-        Box::new(g.to_le_bytes().into_iter())
+        let mut byte_arr : [u8;8] = [0;8] ;
+        byte_arr.clone_from_slice(g.to_le_bytes().as_slice());
+        Box::new(byte_arr.into_iter())
     }
 
     fn update(&mut self) {

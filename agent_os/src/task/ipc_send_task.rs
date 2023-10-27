@@ -2,7 +2,6 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use bson::Bson;
-use zstd;
 
 use crate::buffer::BufferControllerAndReader;
 use crate::ipc::IpcSendStream;
@@ -38,10 +37,7 @@ pub fn ipc_send_task_gen(
 
         result_change_err_is_string(collected.to_writer(&mut pack_data))?;
 
-        let compress_data =
-            result_change_err_is_string(zstd::encode_all(pack_data.as_slice(), 19))?;
-
-        result_change_err_is_string(stream.send(compress_data.as_slice()))?;
+        result_change_err_is_string(stream.send(pack_data.as_slice()))?;
 
         Ok(())
     };
