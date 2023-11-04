@@ -14,8 +14,8 @@ static  public class TomlConfigLoader
         var loaded = Toml.ToModel<T>(data);
         TomlConfigLoader.config = loaded;
     }
-    static public T GetToml<T>(this IConfigLoader<T> loader) where T : class, new()
+    static public T? GetToml<T>(this IConfigLoader<T> loader) where T : class, new()
     {
-        return (T) TomlConfigLoader.config;
+        return  (T?) config;
     }
 }

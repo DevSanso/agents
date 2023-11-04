@@ -3,7 +3,7 @@ namespace InfoGatherHub.HubCommon.Observer;
 using System;
 using System.Collections.Generic;
 
-class Subject<T>
+class Subject<T> where T : struct
 {
     private List<IObserver<T>> observers = new List<IObserver<T>>();
     private T data;

@@ -6,16 +6,21 @@ public class EnumToStringCache<T> where T :  System.Enum
 {
     private Dictionary<T, string> dict = new Dictionary<T, string>();
 
-    private bool isExist(T value)
-    {
-        return dict.ContainsKey(value);
-    }
     public string get(T value)
     {
-        if(isExist(value) == false)dict.Add(value, value.ToString());
         string? output = "";
 
-        dict.TryGetValue(value, out output);
-        return output!;
+        bool isCatched = dict.TryGetValue(value, out output);
+        if(isCatched == true)
+        {
+            return output!;
+        }
+        else
+        {
+            dict.Add(value, value.ToString());
+            return value.ToString();
+        }
+
+        
     }
 }

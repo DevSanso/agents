@@ -5,6 +5,7 @@ using System.Threading.Channels;
 
 using InfoGatherHub.HubGlobal.Logger;
 using InfoGatherHub.HubCommon.Cache;
+using InfoGatherHub.HubCommon.Display;
 
 public static class XmlLogger
 {
@@ -14,10 +15,12 @@ public static class XmlLogger
     private static LogLevel[] logLevels = new LogLevel[2];
     private static EnumToStringCache<LogLevel> levelCache = new EnumToStringCache<LogLevel>();
     private static EnumToStringCache<LogCategory> categoryCache = new EnumToStringCache<LogCategory>();
-
-    public static void InitXml(this ILogger logger, string logPath)
+    private static IDisplay? display = null;
+ 
+    public static void InitXml(this ILogger logger, string logPath, IDisplay display)
     {
         XmlLogger.logPath = logPath;
+        XmlLogger.display = display;
     }
     public static void LogThread()
     {
@@ -53,7 +56,7 @@ public static class XmlLogger
 
             string output = xml.OuterXml;
 
-            Console.WriteLine(output);
+            display?.Display(output);
         }
     }
 
