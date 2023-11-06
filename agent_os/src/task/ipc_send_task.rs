@@ -1,42 +1,48 @@
 use std::sync::Arc;
 use std::sync::RwLock;
 
-use bson::Bson;
+use protobuf;
 
-use crate::buffer::BufferControllerAndReader;
+use crate::utils::buffer::BufferControllerAndReader;
 use crate::ipc::IpcSendStream;
 use crate::utils::result::result_change_err_is_string;
+use crate::protos::message::{Data, AgentOsMessage};
+use crate::utils::util_time;
 
 pub fn ipc_send_task_gen(
     mut stream: Box<dyn IpcSendStream + Sync + Send>,
-    buf: Arc<RwLock<dyn BufferControllerAndReader<(String, Bson)> + Send + Sync>>,
+    buf: Arc<RwLock<dyn BufferControllerAndReader<Data> + Send + Sync>>,
 ) -> impl FnOnce(()) -> Result<(), String> + Send {
 
     let func = move |()| -> Result<(), String> {
 
         let controller = buf;
 
-        let mut g = result_change_err_is_string(controller.write())?;
-
-        result_change_err_is_string(g.swtich())?;
-
-        drop(g);
+        {
+            let mut g = result_change_err_is_string(controller.write())?;
+            result_change_err_is_string(g.swtich())?;
+        }
 
         let g = result_change_err_is_string(controller.read())?;
 
         let send_data = result_change_err_is_string(g.read())?;
 
-        let collected = send_data
+        if send_data.len() <= 0 {
+            return Ok(());
+        }
+
+        let mut collected = send_data
             .into_iter()
-            .fold(bson::Document::new(), |mut acc, x| {
-                acc.insert(x.0, x.1);
+            .fold(AgentOsMessage::new(), |mut acc, x| {
+                acc.datas.push(x);
                 acc
             });
-
-        let mut pack_data = Vec::<u8>::new();
-
-        result_change_err_is_string(collected.to_writer(&mut pack_data))?;
-
+        
+        collected.unix_epoch = util_time::get_unix_epoch_now().as_secs();
+        
+        let pack_data = result_change_err_is_string(
+            protobuf::Message::write_to_bytes(&collected))?;
+        
         result_change_err_is_string(stream.send(pack_data.as_slice()))?;
 
         Ok(())

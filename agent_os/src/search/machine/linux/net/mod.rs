@@ -10,18 +10,19 @@ pub use arp::read_arp_info;
 pub use sockstat::read_sock_stat_info;
 pub use dev::read_net_dev_info;
 
-use arp::ArpInfo;
-use tcp::Tcp4Stat;
-use sockstat::SockStatInfo;
-use dev::NetDevInfo;
+use crate::protos::net::ArpInfos;
+use crate::protos::net::NetDevInfos;
+use crate::protos::net::Tcp4Stats;
+use crate::protos::net::SockStatInfo;
 
 use crate::search::machine::traits::OsNet;
 
+
 #[derive(Clone)]
 pub struct OsLinuxNetStat {
-    arps : Vec<ArpInfo>,
-    devs : Vec<NetDevInfo>,
-    tcps : Vec<Tcp4Stat>,
+    arps : ArpInfos,
+    devs : NetDevInfos,
+    tcps : Tcp4Stats,
     sockstat : SockStatInfo
 }
 
@@ -38,13 +39,13 @@ impl OsLinuxNetStat {
             sockstat
         })
     } 
-    pub fn get_args(&self) -> Vec<ArpInfo> {
+    pub fn get_args(&self) -> ArpInfos {
         return self.arps.clone();
     }
-    pub fn get_devs(&self) -> Vec<NetDevInfo> {
+    pub fn get_devs(&self) -> NetDevInfos {
         return self.devs.clone();
     }
-    pub fn get_tcps(&self) -> Vec<Tcp4Stat> {
+    pub fn get_tcps(&self) -> Tcp4Stats {
         return self.tcps.clone();
     }
     pub fn get_sock_stat(&self) -> SockStatInfo {
@@ -54,10 +55,10 @@ impl OsLinuxNetStat {
 
 impl OsNet<OsLinuxNetStat> for OsLinuxNetStat {
     fn total_rx(&self) -> u64 {
-        self.devs.iter().fold(0, |acc, val| {return acc + val.rx_bytes})
+        self.devs.infos.iter().fold(0, |acc, val| {return acc + val.rx_bytes})
     }
     fn total_tx(&self) -> u64 {
-        self.devs.iter().fold(0, |acc, val| {return acc + val.rx_bytes})
+        self.devs.infos.iter().fold(0, |acc, val| {return acc + val.rx_bytes})
     }
     fn total_use_sock(&self) -> u64 {
         self.sockstat.use_count

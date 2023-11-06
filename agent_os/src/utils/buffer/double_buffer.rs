@@ -3,7 +3,7 @@ use std::sync::RwLock;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::Relaxed;
 
-use crate::buffer;
+use crate::utils::buffer;
 
 pub struct DoubleBuffer<T> {
     w_index : AtomicUsize,

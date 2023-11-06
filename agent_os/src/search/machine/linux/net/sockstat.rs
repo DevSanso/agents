@@ -1,26 +1,10 @@
 use std::io;
 use std::fs;
 
-use serde::Serialize;
-
 use crate::utils::option::opt_cast_to_io_result;
 use crate::utils::result::result_cast_to_io_result;
+use crate::protos::net::SockStatInfo;
 
-#[derive(Debug,Clone,Serialize)]
-pub struct SockStatInfo {
-    pub use_count : u64,
-    pub in_use : u64,
-    pub orphan : u64,
-    pub tw : u64,
-    pub alloc : u64,
-    pub mem_kb : f64
-}
-
-impl Default for SockStatInfo {
-    fn default() -> Self {
-        SockStatInfo { use_count: 0, in_use: 0, orphan: 0, tw: 0, alloc: 0, mem_kb: 0.0 }
-    }
-}
 
 pub fn read_sock_stat_info() -> io::Result<SockStatInfo> {
     const PATH: &str = "/proc/net/sockstat";
@@ -54,12 +38,13 @@ pub fn read_sock_stat_info() -> io::Result<SockStatInfo> {
         u64::from_str_radix(tcp_line_tok[10], 10)
     )? as f64 / 1024.0;
 
-    Ok(SockStatInfo{
-        use_count,
-        in_use,
-        orphan,
-        tw,
-        alloc,
-        mem_kb
-    })
+    let mut stat = SockStatInfo::new();
+    stat.use_count = use_count;
+    stat.in_use = in_use;
+    stat.orphan = orphan;
+    stat.tw = tw;
+    stat.alloc = alloc;
+    stat.mem_kb = mem_kb;
+
+    Ok(stat)
 }

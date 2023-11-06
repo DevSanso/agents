@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package agnet_os; // 패키지 이름을 설정합니다.
+
+enum DataFormat {
+    NetArp = 0;
+    NetDev = 1;
+    NetSockStat = 2;
+    NetTcp4Stat = 3;
+}
+
+message Data {
+    DataFormat format = 1;
+    bytes raw_data = 2;
+}
+
+message AgentOsMessage {
+    uint64 unix_epoch = 1;
+    repeated Data datas = 2;
+}

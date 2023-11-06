@@ -7,7 +7,7 @@ use toml;
 
 use crate::utils::result::result_cast_to_io_result;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct Config {
     pub ipc_path : String,
     pub ipc_size : u64
