@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package net; // 패키지 이름을 설정합니다.
+
+message Tcp4Stat {
+    string local_addr_hex = 1;
+    string remote_addr_hex = 2;
+    uint32 connection_state = 3;
+    uint64 tx_queue = 4;
+    uint64 rx_queue = 5;
+    uint32 time_active = 6;
+    uint64 jiffies_timer_expires = 7;
+    uint64 rto = 8;
+    uint32 uid = 9;
+    uint32 zero_window_probes = 10;
+    uint64 inode = 11;
+    string etc = 12;
+}
+
+message Tcp4Stats {
+    repeated Tcp4Stat stats = 1;
+}
