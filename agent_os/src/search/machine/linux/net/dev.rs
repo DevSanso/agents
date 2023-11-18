@@ -1,59 +1,17 @@
 use std::io;
 use std::fs;
 
-use serde::Serialize;
-
 use crate::utils::result::result_cast_to_io_result;
+use crate::protos::net::{NetDevInfo,NetDevInfos};
 
-#[derive(Debug,Clone,Serialize)]
-pub struct NetDevInfo {
-    pub interface: String,
-    pub rx_bytes: u64,
-    pub rx_packets: u64,
-    pub rx_errs: u64,
-    pub rx_drop: u64,
-    pub rx_fifo: u64,
-    pub rx_frame: u64,
-    pub rx_compressed: u64,
-    pub tx_bytes: u64,
-    pub tx_packets: u64,
-    pub tx_errs: u64,
-    pub tx_drop: u64,
-    pub tx_fifo: u64,
-    pub tx_frame: u64,
-    pub tx_compressed: u64,
-}
-
-impl Default for NetDevInfo {
-    fn default() -> Self {
-        NetDevInfo {
-            interface: String::new(),
-            rx_bytes: 0,
-            rx_packets: 0,
-            rx_errs: 0,
-            rx_drop: 0,
-            rx_fifo: 0,
-            rx_frame: 0,
-            rx_compressed: 0,
-            tx_bytes: 0,
-            tx_packets: 0,
-            tx_errs: 0,
-            tx_drop: 0,
-            tx_fifo: 0,
-            tx_frame: 0,
-            tx_compressed: 0,
-        }
-    }
-}
-
-pub fn read_net_dev_info() -> io::Result<Vec<NetDevInfo>> {
+pub fn read_net_dev_info() -> io::Result<NetDevInfos> {
     const PATH: &str = "/proc/net/dev";
     let file = fs::read_to_string(PATH)?;
     let data = file.split("\n")
                                                                 .skip(2)
                                                                 .filter(|x| x.len() >= 17);
     
-    let ret : io::Result<Vec<NetDevInfo>> = data.map(|x| {
+    let dev_slice : io::Result<Vec<NetDevInfo>> = data.map(|x| {
         let tok : Vec<&str> = x.split_whitespace().collect();
         
         let interface = tok[0].trim_matches(':').to_string();
@@ -113,26 +71,28 @@ pub fn read_net_dev_info() -> io::Result<Vec<NetDevInfo>> {
         let tx_compressed =  result_cast_to_io_result(
             tok[15].parse::<u64>()
         )?;
+        let mut devi = NetDevInfo::new();
 
-        Ok(NetDevInfo {
-            interface,
-            rx_bytes,
-            rx_packets,
-            rx_errs,
-            rx_drop,
-            rx_fifo,
-            rx_frame,
-            rx_compressed,
-            tx_bytes,
-            tx_packets,
-            tx_errs,
-            tx_drop,
-            tx_fifo,
-            tx_frame,
-            tx_compressed,
-        })
+        devi.interface = interface;
+        devi.rx_bytes = rx_bytes;
+        devi.rx_packets = rx_packets;
+        devi.rx_errs = rx_errs;
+        devi.rx_drop = rx_drop;
+        devi.rx_fifo = rx_fifo;
+        devi.rx_frame = rx_frame;
+        devi.rx_compressed = rx_compressed;
+        devi.tx_bytes = tx_bytes;
+        devi.tx_packets = tx_packets;
+        devi.tx_errs = tx_errs;
+        devi.tx_drop = tx_drop;
+        devi.tx_fifo = tx_fifo;
+        devi.tx_frame = tx_frame;
+        devi.tx_compressed = tx_compressed;
+
+        Ok(devi)
 
     }).collect();
-
-    ret
+    let mut ret = NetDevInfos::new();
+    ret.infos.clone_from(&dev_slice?);
+    Ok(ret)
 }

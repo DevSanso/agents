@@ -1,12 +1,10 @@
-pub mod buffer;
 pub mod config;
 pub mod ipc;
 pub mod pool;
 pub mod search;
 pub mod task;
 pub mod utils;
-
-
+pub mod protos;
 
 use std::env;
 use std::error::Error;
@@ -14,13 +12,11 @@ use std::io;
 use std::sync::Arc;
 use std::time;
 
-use bson::Bson;
-
 use pool::Pool;
+use utils::buffer;
 
-const TOTAL_NET_INTERVAL: f64 = 4.0;
-const OS_DETAILS_NET_INTERVAL: f64 = 6.0;
-const IPC_SEND_INTERVAL: f64 = 2.0;
+const OS_DETAILS_NET_INTERVAL: u64 = 6;
+const IPC_SEND_INTERVAL: u64 = 2;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config_path = env::args().skip(1).next();
@@ -39,13 +35,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let tp = pool::thraed_pool::ThreadPool::new(200);
 
-    let buf = buffer::DoubleBuffer::<(String, Bson)>::new();
+    let buf = buffer::DoubleBuffer::<protos::message::Data>::new();
 
     loop {
         {
-            let now = time::SystemTime::now().duration_since(time::UNIX_EPOCH)?;
-
-            let now_sec = now.as_secs();
+            let now = utils::util_time::get_unix_epoch_now();
 
             let tp_g_res = tp.lock();
 
@@ -57,22 +51,15 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
 
             let mut tp_g = tp_g_res.unwrap();
-
-            if now_sec as f64 % IPC_SEND_INTERVAL <= 0.005 {
+            
+            if utils::util_time::is_interval(now, time::Duration::from_secs(IPC_SEND_INTERVAL)) {
                 let buf_clone = Arc::clone(&buf);
                 let fun = task::ipc_send_task_gen(ipc_listener.get_stream()?, buf_clone);
 
                 tp_g.use_item((), fun)?;
             }
-
-            if now_sec as f64 % TOTAL_NET_INTERVAL <= 0.005 {
-                let buf_clone = Arc::clone(&buf);
-                let fun = task::total_net_stat_thread_gen(buf_clone);
-
-                tp_g.use_item((), fun)?;
-            }
-
-            if now_sec as f64 % OS_DETAILS_NET_INTERVAL <= 0.005 {
+            
+            if utils::util_time::is_interval(now, time::Duration::from_secs(OS_DETAILS_NET_INTERVAL)) {
                 let buf_clone = Arc::clone(&buf);
                 let fun = task::os_details_net_stat_thread_gen(buf_clone);
                 tp_g.use_item((), fun)?;
@@ -80,5 +67,5 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    Ok(())
+    //Ok(())
 }

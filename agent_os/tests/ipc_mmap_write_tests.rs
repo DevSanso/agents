@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io;
-use std::io::Read;
 
 use memmap2;
 
@@ -16,9 +15,9 @@ pub fn ipc_mmap_write_test() -> io::Result<()>{
     
     let mut seq = new_seq(SequenceKind::U64(0));
 
-    let mut output = make_format(MSG.len(),seq.next(), MSG.as_bytes());
+    let output = make_format(MSG.len(),seq.next(), MSG.as_bytes());
     let mut listener =new_listener(ListenerKind::Mmap(String::from("/tmp/ipc_mmap_write_test_mmap"), 36))?;
-    let mut  stream = listener.get_stream()?;
+    let mut stream = listener.get_stream()?;
 
     let read = unsafe {
         let f = File::open("/tmp/ipc_mmap_write_test_mmap")?;

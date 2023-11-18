@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package agent_os.net;
+
+message ArpInfo {
+    string ip_address = 1;
+    uint32 hw_type = 2;
+    string flags = 3;
+    string device = 4;
+}
+
+message ArpInfos {
+    repeated ArpInfo infos = 1;
+}
+
+message NetDevInfo {
+    string interface = 1;
+    uint64 rx_bytes = 2;
+    uint64 rx_packets = 3;
+    uint64 rx_errs = 4;
+    uint64 rx_drop = 5;
+    uint64 rx_fifo = 6;
+    uint64 rx_frame = 7;
+    uint64 rx_compressed = 8;
+    uint64 tx_bytes = 9;
+    uint64 tx_packets = 10;
+    uint64 tx_errs = 11;
+    uint64 tx_drop = 12;
+    uint64 tx_fifo = 13;
+    uint64 tx_frame = 14;
+    uint64 tx_compressed = 15;
+}
+
+message NetDevInfos {
+    repeated NetDevInfo infos = 1;
+}
+
+message SockStatInfo {
+    uint64 use_count = 1;
+    uint64 in_use = 2;
+    uint64 orphan = 3;
+    uint64 tw = 4;
+    uint64 alloc = 5;
+    double mem_kb = 6;
+}
+
+message Tcp4Stat {
+    string local_addr_hex = 1;
+    string remote_addr_hex = 2;
+    uint32 connection_state = 3;
+    uint64 tx_queue = 4;
+    uint64 rx_queue = 5;
+    uint32 time_active = 6;
+    uint64 jiffies_timer_expires = 7;
+    uint64 rto = 8;
+    uint32 uid = 9;
+    uint32 zero_window_probes = 10;
+    uint64 inode = 11;
+    string etc = 12;
+}
+
+message Tcp4Stats {
+    repeated Tcp4Stat stats = 1;
+}

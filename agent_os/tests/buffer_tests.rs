@@ -1,9 +1,9 @@
 use std::io;
 
-use agent_os::buffer::DoubleBuffer;
-use agent_os::buffer::BufferAdder;
-use agent_os::buffer::BufferController;
-use agent_os::buffer::BufferReader;
+use agent_os::utils::buffer::DoubleBuffer;
+use agent_os::utils::buffer::BufferAdder;
+use agent_os::utils::buffer::BufferController;
+use agent_os::utils::buffer::BufferReader;
 use agent_os::utils::result::result_cast_to_io_result;
 
 #[derive(Clone)]

@@ -2,7 +2,6 @@ use std::sync::{Mutex,Arc};
 use std::fs::OpenOptions;
 use std::io;
 use std::path::Path;
-use std::io::Write;
 
 use memmap2;
 
