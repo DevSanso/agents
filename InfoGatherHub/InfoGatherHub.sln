@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubCommon", "HubCommon\HubC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubGlobal", "HubGlobal\HubGlobal.csproj", "{68C410D2-D53D-469C-B8CA-2DE67646E568}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubProtos", "HubProtos\HubProtos.csproj", "{A89B800E-1052-4947-8638-A0551D1D9843}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{68C410D2-D53D-469C-B8CA-2DE67646E568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68C410D2-D53D-469C-B8CA-2DE67646E568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68C410D2-D53D-469C-B8CA-2DE67646E568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A89B800E-1052-4947-8638-A0551D1D9843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A89B800E-1052-4947-8638-A0551D1D9843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A89B800E-1052-4947-8638-A0551D1D9843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A89B800E-1052-4947-8638-A0551D1D9843}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

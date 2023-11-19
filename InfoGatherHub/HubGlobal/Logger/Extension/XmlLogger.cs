@@ -2,6 +2,7 @@ namespace InfoGatherHub.HubGlobal.Logger.Extension.Xml;
 
 using System.Xml;
 using System.Threading.Channels;
+using System.Threading;
 
 using InfoGatherHub.HubGlobal.Logger;
 using InfoGatherHub.HubCommon.Cache;
@@ -21,6 +22,7 @@ public static class XmlLogger
     {
         XmlLogger.logPath = logPath;
         XmlLogger.display = display;
+        new Thread(new ThreadStart(LogThread));
     }
     public static void LogThread()
     {
@@ -31,7 +33,6 @@ public static class XmlLogger
         while(true)
         {
             if(reader.TryRead(out logData) == false) continue;
-            
 
             string current = DateTime.Now.ToString();
             var logtime = xml.CreateElement("Logtime");

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HubGlobal\HubGlobal.csproj" />
     <ProjectReference Include="..\HubCommon\HubCommon.csproj" />
+    <ProjectReference Include="..\HubProtos\HubProtos.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

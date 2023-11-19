@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package agent_os.net;
 
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Os.Net";
+
 message ArpInfo {
     string ip_address = 1;
     uint32 hw_type = 2;
