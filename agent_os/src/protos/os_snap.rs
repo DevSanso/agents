@@ -19,22 +19,22 @@
 #![allow(unused_results)]
 #![allow(unused_mut)]
 
-//! Generated file from `message.proto`
+//! Generated file from `os_snap.proto`
 
 /// Generated files are compatible only with the same version
 /// of protobuf runtime.
 const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_3_3_0;
 
-// @@protoc_insertion_point(message:agnet_os.Data)
+// @@protoc_insertion_point(message:agnet.os.Data)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct Data {
     // message fields
-    // @@protoc_insertion_point(field:agnet_os.Data.format)
+    // @@protoc_insertion_point(field:agnet.os.Data.format)
     pub format: ::protobuf::EnumOrUnknown<DataFormat>,
-    // @@protoc_insertion_point(field:agnet_os.Data.raw_data)
+    // @@protoc_insertion_point(field:agnet.os.Data.raw_data)
     pub raw_data: ::std::vec::Vec<u8>,
     // special fields
-    // @@protoc_insertion_point(special_field:agnet_os.Data.special_fields)
+    // @@protoc_insertion_point(special_field:agnet.os.Data.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -165,27 +165,27 @@ impl ::protobuf::reflect::ProtobufValue for Data {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agnet_os.AgentOsMessage)
+// @@protoc_insertion_point(message:agnet.os.AgentOsSnap)
 #[derive(PartialEq,Clone,Default,Debug)]
-pub struct AgentOsMessage {
+pub struct AgentOsSnap {
     // message fields
-    // @@protoc_insertion_point(field:agnet_os.AgentOsMessage.unix_epoch)
+    // @@protoc_insertion_point(field:agnet.os.AgentOsSnap.unix_epoch)
     pub unix_epoch: u64,
-    // @@protoc_insertion_point(field:agnet_os.AgentOsMessage.datas)
+    // @@protoc_insertion_point(field:agnet.os.AgentOsSnap.datas)
     pub datas: ::std::vec::Vec<Data>,
     // special fields
-    // @@protoc_insertion_point(special_field:agnet_os.AgentOsMessage.special_fields)
+    // @@protoc_insertion_point(special_field:agnet.os.AgentOsSnap.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
-impl<'a> ::std::default::Default for &'a AgentOsMessage {
-    fn default() -> &'a AgentOsMessage {
-        <AgentOsMessage as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a AgentOsSnap {
+    fn default() -> &'a AgentOsSnap {
+        <AgentOsSnap as ::protobuf::Message>::default_instance()
     }
 }
 
-impl AgentOsMessage {
-    pub fn new() -> AgentOsMessage {
+impl AgentOsSnap {
+    pub fn new() -> AgentOsSnap {
         ::std::default::Default::default()
     }
 
@@ -194,24 +194,24 @@ impl AgentOsMessage {
         let mut oneofs = ::std::vec::Vec::with_capacity(0);
         fields.push(::protobuf::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
             "unix_epoch",
-            |m: &AgentOsMessage| { &m.unix_epoch },
-            |m: &mut AgentOsMessage| { &mut m.unix_epoch },
+            |m: &AgentOsSnap| { &m.unix_epoch },
+            |m: &mut AgentOsSnap| { &mut m.unix_epoch },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "datas",
-            |m: &AgentOsMessage| { &m.datas },
-            |m: &mut AgentOsMessage| { &mut m.datas },
+            |m: &AgentOsSnap| { &m.datas },
+            |m: &mut AgentOsSnap| { &mut m.datas },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<AgentOsMessage>(
-            "AgentOsMessage",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<AgentOsSnap>(
+            "AgentOsSnap",
             fields,
             oneofs,
         )
     }
 }
 
-impl ::protobuf::Message for AgentOsMessage {
-    const NAME: &'static str = "AgentOsMessage";
+impl ::protobuf::Message for AgentOsSnap {
+    const NAME: &'static str = "AgentOsSnap";
 
     fn is_initialized(&self) -> bool {
         true
@@ -269,8 +269,8 @@ impl ::protobuf::Message for AgentOsMessage {
         &mut self.special_fields
     }
 
-    fn new() -> AgentOsMessage {
-        AgentOsMessage::new()
+    fn new() -> AgentOsSnap {
+        AgentOsSnap::new()
     }
 
     fn clear(&mut self) {
@@ -279,8 +279,8 @@ impl ::protobuf::Message for AgentOsMessage {
         self.special_fields.clear();
     }
 
-    fn default_instance() -> &'static AgentOsMessage {
-        static instance: AgentOsMessage = AgentOsMessage {
+    fn default_instance() -> &'static AgentOsSnap {
+        static instance: AgentOsSnap = AgentOsSnap {
             unix_epoch: 0,
             datas: ::std::vec::Vec::new(),
             special_fields: ::protobuf::SpecialFields::new(),
@@ -289,33 +289,33 @@ impl ::protobuf::Message for AgentOsMessage {
     }
 }
 
-impl ::protobuf::MessageFull for AgentOsMessage {
+impl ::protobuf::MessageFull for AgentOsSnap {
     fn descriptor() -> ::protobuf::reflect::MessageDescriptor {
         static descriptor: ::protobuf::rt::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::Lazy::new();
-        descriptor.get(|| file_descriptor().message_by_package_relative_name("AgentOsMessage").unwrap()).clone()
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("AgentOsSnap").unwrap()).clone()
     }
 }
 
-impl ::std::fmt::Display for AgentOsMessage {
+impl ::std::fmt::Display for AgentOsSnap {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for AgentOsMessage {
+impl ::protobuf::reflect::ProtobufValue for AgentOsSnap {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-// @@protoc_insertion_point(enum:agnet_os.DataFormat)
+// @@protoc_insertion_point(enum:agnet.os.DataFormat)
 pub enum DataFormat {
-    // @@protoc_insertion_point(enum_value:agnet_os.DataFormat.NetArp)
+    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetArp)
     NetArp = 0,
-    // @@protoc_insertion_point(enum_value:agnet_os.DataFormat.NetDev)
+    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetDev)
     NetDev = 1,
-    // @@protoc_insertion_point(enum_value:agnet_os.DataFormat.NetSockStat)
+    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetSockStat)
     NetSockStat = 2,
-    // @@protoc_insertion_point(enum_value:agnet_os.DataFormat.NetTcp4Stat)
+    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetTcp4Stat)
     NetTcp4Stat = 3,
 }
 
@@ -379,13 +379,14 @@ impl DataFormat {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\rmessage.proto\x12\x08agnet_os\"O\n\x04Data\x12,\n\x06format\x18\x01\
-    \x20\x01(\x0e2\x14.agnet_os.DataFormatR\x06format\x12\x19\n\x08raw_data\
-    \x18\x02\x20\x01(\x0cR\x07rawData\"U\n\x0eAgentOsMessage\x12\x1d\n\nunix\
-    _epoch\x18\x01\x20\x01(\x04R\tunixEpoch\x12$\n\x05datas\x18\x02\x20\x03(\
-    \x0b2\x0e.agnet_os.DataR\x05datas*F\n\nDataFormat\x12\n\n\x06NetArp\x10\
+    \n\ros_snap.proto\x12\x08agnet.os\"O\n\x04Data\x12,\n\x06format\x18\x01\
+    \x20\x01(\x0e2\x14.agnet.os.DataFormatR\x06format\x12\x19\n\x08raw_data\
+    \x18\x02\x20\x01(\x0cR\x07rawData\"R\n\x0bAgentOsSnap\x12\x1d\n\nunix_ep\
+    och\x18\x01\x20\x01(\x04R\tunixEpoch\x12$\n\x05datas\x18\x02\x20\x03(\
+    \x0b2\x0e.agnet.os.DataR\x05datas*F\n\nDataFormat\x12\n\n\x06NetArp\x10\
     \0\x12\n\n\x06NetDev\x10\x01\x12\x0f\n\x0bNetSockStat\x10\x02\x12\x0f\n\
-    \x0bNetTcp4Stat\x10\x03b\x06proto3\
+    \x0bNetTcp4Stat\x10\x03B#\xaa\x02\x20InfoGatherHub.HubProtos.Agent.Osb\
+    \x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -405,7 +406,7 @@ pub fn file_descriptor() -> &'static ::protobuf::reflect::FileDescriptor {
             let mut deps = ::std::vec::Vec::with_capacity(0);
             let mut messages = ::std::vec::Vec::with_capacity(2);
             messages.push(Data::generated_message_descriptor_data());
-            messages.push(AgentOsMessage::generated_message_descriptor_data());
+            messages.push(AgentOsSnap::generated_message_descriptor_data());
             let mut enums = ::std::vec::Vec::with_capacity(1);
             enums.push(DataFormat::generated_enum_descriptor_data());
             ::protobuf::reflect::GeneratedFileDescriptor::new_generated(

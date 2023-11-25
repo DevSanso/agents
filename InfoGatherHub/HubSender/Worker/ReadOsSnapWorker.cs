@@ -4,9 +4,16 @@ using System.Collections.Concurrent;
 
 using InfoGatherHub.HubSender.Snap;
 using InfoGatherHub.HubCommon.Format;
-public class ReadOsSnapWorker
+public class ReadOsSnapWorker : IWorker
 {
     private UInt64 currentSeq = 0;
+    private ISnapClient client;
+    private ConcurrentQueue<IFormat<Void>> sender;
+    public ReadOsSnapWorker(ISnapClient client, ConcurrentQueue<IFormat<Void>> sender)
+    {
+        this.client = client;
+        this.sender = sender;
+    }
     private UInt64 ParsingSeq(byte []data)
     {
         byte[] seqBin = new byte[8];
@@ -28,7 +35,7 @@ public class ReadOsSnapWorker
 
         return dataBin;
     }
-    public void Work(ISnapClient client, ConcurrentQueue<IFormat<Void>> sender)
+    private void WorkImpl(ISnapClient client, ConcurrentQueue<IFormat<Void>> sender)
     {
         client.fetchSnapData();
         byte[] data = client.getSnapData();
@@ -43,6 +50,10 @@ public class ReadOsSnapWorker
 
         byte[] sendData = ParsingData(data, (int)size);
 
-        sender.Enqueue(Format.Now("OS", sendData));
+        sender.Enqueue(new Format("OS", sendData));
+    }
+    public void Work()
+    {
+        WorkImpl(this.client, this.sender);
     }
 }

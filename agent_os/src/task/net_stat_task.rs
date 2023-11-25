@@ -6,7 +6,7 @@ use protobuf::{EnumOrUnknown, Message};
 use crate::utils::buffer::BufferAdder;
 use crate::search::machine::get_machine;
 use crate::utils::result::result_change_err_is_string;
-use crate::protos::message::{Data, DataFormat};
+use crate::protos::os_snap::{Data, DataFormat};
 
 #[cfg(target_os = "linux")]
 pub fn os_details_net_stat_thread_gen(

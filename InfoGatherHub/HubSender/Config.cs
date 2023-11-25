@@ -1,12 +1,16 @@
 namespace InfoGatherHub.HubSender;
 
-record SnapInfo
+record SnapInfoSetting
 {
-    string type = "";
-    string path = "";
+    public string path = "";
+}
+record LogSetting
+{
+    public string type = "";
+    public string? logPath = null;
 }
 record Config
 {
-    string logPath = "";
-    SnapInfo? osSnapInfo;
+    public LogSetting logSetting;
+    public SnapInfoSetting osSnapSetting;
 }

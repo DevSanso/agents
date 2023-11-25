@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package agnet_os; // 패키지 이름을 설정합니다.
+package agnet.os; // 패키지 이름을 설정합니다.
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Os";
 
@@ -16,7 +16,7 @@ message Data {
     bytes raw_data = 2;
 }
 
-message AgentOsMessage {
+message AgentOsSnap {
     uint64 unix_epoch = 1;
     repeated Data datas = 2;
 }

@@ -6,7 +6,7 @@ use protobuf;
 use crate::utils::buffer::BufferControllerAndReader;
 use crate::ipc::IpcSendStream;
 use crate::utils::result::result_change_err_is_string;
-use crate::protos::message::{Data, AgentOsMessage};
+use crate::protos::os_snap::{Data, AgentOsSnap};
 use crate::utils::util_time;
 
 pub fn ipc_send_task_gen(
@@ -33,7 +33,7 @@ pub fn ipc_send_task_gen(
 
         let mut collected = send_data
             .into_iter()
-            .fold(AgentOsMessage::new(), |mut acc, x| {
+            .fold(AgentOsSnap::new(), |mut acc, x| {
                 acc.datas.push(x);
                 acc
             });

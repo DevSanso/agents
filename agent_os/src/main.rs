@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let tp = pool::thraed_pool::ThreadPool::new(200);
 
-    let buf = buffer::DoubleBuffer::<protos::message::Data>::new();
+    let buf = buffer::DoubleBuffer::<protos::os_snap::Data>::new();
 
     loop {
         {

@@ -65,8 +65,11 @@ impl MmapSendStream {
 impl IpcSendStream for MmapSendStream {
     fn send(&mut self, data : &'_ [u8]) -> std::io::Result<()> {
         let mut g = result_cast_to_io_result(self.f.lock())?;
-        let mut origin = make_format(data.len(), g.1.next(), data);
-        origin.resize(self.file_size, 0);
+        let origin = make_format(data.len(), g.1.next(), data);
+
+        if origin.len() > self.file_size {
+            return Err(io::Error::new(io::ErrorKind::OutOfMemory, "MmapSendStream data is over size"));
+        }
 
         g.0.copy_from_slice(origin.as_slice());
         Ok(())

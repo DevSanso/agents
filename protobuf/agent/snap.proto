@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package agnet; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent";
+
+enum SnapFormat {
+    Os = 0;
+}
+
+message SnapData {
+    SnapFormat format = 1;
+    bytes raw_snap = 2;
+}

@@ -25,20 +25,20 @@
 /// of protobuf runtime.
 const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_3_3_0;
 
-// @@protoc_insertion_point(message:agent_os.net.ArpInfo)
+// @@protoc_insertion_point(message:agent.os.net.ArpInfo)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct ArpInfo {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.ArpInfo.ip_address)
+    // @@protoc_insertion_point(field:agent.os.net.ArpInfo.ip_address)
     pub ip_address: ::std::string::String,
-    // @@protoc_insertion_point(field:agent_os.net.ArpInfo.hw_type)
+    // @@protoc_insertion_point(field:agent.os.net.ArpInfo.hw_type)
     pub hw_type: u32,
-    // @@protoc_insertion_point(field:agent_os.net.ArpInfo.flags)
+    // @@protoc_insertion_point(field:agent.os.net.ArpInfo.flags)
     pub flags: ::std::string::String,
-    // @@protoc_insertion_point(field:agent_os.net.ArpInfo.device)
+    // @@protoc_insertion_point(field:agent.os.net.ArpInfo.device)
     pub device: ::std::string::String,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.ArpInfo.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.ArpInfo.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -201,14 +201,14 @@ impl ::protobuf::reflect::ProtobufValue for ArpInfo {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.ArpInfos)
+// @@protoc_insertion_point(message:agent.os.net.ArpInfos)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct ArpInfos {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.ArpInfos.infos)
+    // @@protoc_insertion_point(field:agent.os.net.ArpInfos.infos)
     pub infos: ::std::vec::Vec<ArpInfo>,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.ArpInfos.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.ArpInfos.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -324,42 +324,42 @@ impl ::protobuf::reflect::ProtobufValue for ArpInfos {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.NetDevInfo)
+// @@protoc_insertion_point(message:agent.os.net.NetDevInfo)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct NetDevInfo {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.interface)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.interface)
     pub interface: ::std::string::String,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_bytes)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_bytes)
     pub rx_bytes: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_packets)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_packets)
     pub rx_packets: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_errs)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_errs)
     pub rx_errs: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_drop)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_drop)
     pub rx_drop: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_fifo)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_fifo)
     pub rx_fifo: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_frame)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_frame)
     pub rx_frame: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.rx_compressed)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.rx_compressed)
     pub rx_compressed: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_bytes)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_bytes)
     pub tx_bytes: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_packets)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_packets)
     pub tx_packets: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_errs)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_errs)
     pub tx_errs: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_drop)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_drop)
     pub tx_drop: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_fifo)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_fifo)
     pub tx_fifo: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_frame)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_frame)
     pub tx_frame: u64,
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfo.tx_compressed)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfo.tx_compressed)
     pub tx_compressed: u64,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.NetDevInfo.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.NetDevInfo.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -698,14 +698,14 @@ impl ::protobuf::reflect::ProtobufValue for NetDevInfo {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.NetDevInfos)
+// @@protoc_insertion_point(message:agent.os.net.NetDevInfos)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct NetDevInfos {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.NetDevInfos.infos)
+    // @@protoc_insertion_point(field:agent.os.net.NetDevInfos.infos)
     pub infos: ::std::vec::Vec<NetDevInfo>,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.NetDevInfos.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.NetDevInfos.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -821,24 +821,24 @@ impl ::protobuf::reflect::ProtobufValue for NetDevInfos {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.SockStatInfo)
+// @@protoc_insertion_point(message:agent.os.net.SockStatInfo)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct SockStatInfo {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.use_count)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.use_count)
     pub use_count: u64,
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.in_use)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.in_use)
     pub in_use: u64,
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.orphan)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.orphan)
     pub orphan: u64,
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.tw)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.tw)
     pub tw: u64,
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.alloc)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.alloc)
     pub alloc: u64,
-    // @@protoc_insertion_point(field:agent_os.net.SockStatInfo.mem_kb)
+    // @@protoc_insertion_point(field:agent.os.net.SockStatInfo.mem_kb)
     pub mem_kb: f64,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.SockStatInfo.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.SockStatInfo.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -1033,36 +1033,36 @@ impl ::protobuf::reflect::ProtobufValue for SockStatInfo {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.Tcp4Stat)
+// @@protoc_insertion_point(message:agent.os.net.Tcp4Stat)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct Tcp4Stat {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.local_addr_hex)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.local_addr_hex)
     pub local_addr_hex: ::std::string::String,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.remote_addr_hex)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.remote_addr_hex)
     pub remote_addr_hex: ::std::string::String,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.connection_state)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.connection_state)
     pub connection_state: u32,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.tx_queue)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.tx_queue)
     pub tx_queue: u64,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.rx_queue)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.rx_queue)
     pub rx_queue: u64,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.time_active)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.time_active)
     pub time_active: u32,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.jiffies_timer_expires)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.jiffies_timer_expires)
     pub jiffies_timer_expires: u64,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.rto)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.rto)
     pub rto: u64,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.uid)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.uid)
     pub uid: u32,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.zero_window_probes)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.zero_window_probes)
     pub zero_window_probes: u32,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.inode)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.inode)
     pub inode: u64,
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stat.etc)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stat.etc)
     pub etc: ::std::string::String,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.Tcp4Stat.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.Tcp4Stat.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -1353,14 +1353,14 @@ impl ::protobuf::reflect::ProtobufValue for Tcp4Stat {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agent_os.net.Tcp4Stats)
+// @@protoc_insertion_point(message:agent.os.net.Tcp4Stats)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct Tcp4Stats {
     // message fields
-    // @@protoc_insertion_point(field:agent_os.net.Tcp4Stats.stats)
+    // @@protoc_insertion_point(field:agent.os.net.Tcp4Stats.stats)
     pub stats: ::std::vec::Vec<Tcp4Stat>,
     // special fields
-    // @@protoc_insertion_point(special_field:agent_os.net.Tcp4Stats.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.net.Tcp4Stats.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -1477,11 +1477,11 @@ impl ::protobuf::reflect::ProtobufValue for Tcp4Stats {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\tnet.proto\x12\x0cagent_os.net\"o\n\x07ArpInfo\x12\x1d\n\nip_address\
+    \n\tnet.proto\x12\x0cagent.os.net\"o\n\x07ArpInfo\x12\x1d\n\nip_address\
     \x18\x01\x20\x01(\tR\tipAddress\x12\x17\n\x07hw_type\x18\x02\x20\x01(\rR\
     \x06hwType\x12\x14\n\x05flags\x18\x03\x20\x01(\tR\x05flags\x12\x16\n\x06\
     device\x18\x04\x20\x01(\tR\x06device\"7\n\x08ArpInfos\x12+\n\x05infos\
-    \x18\x01\x20\x03(\x0b2\x15.agent_os.net.ArpInfoR\x05infos\"\xb4\x03\n\nN\
+    \x18\x01\x20\x03(\x0b2\x15.agent.os.net.ArpInfoR\x05infos\"\xb4\x03\n\nN\
     etDevInfo\x12\x1c\n\tinterface\x18\x01\x20\x01(\tR\tinterface\x12\x19\n\
     \x08rx_bytes\x18\x02\x20\x01(\x04R\x07rxBytes\x12\x1d\n\nrx_packets\x18\
     \x03\x20\x01(\x04R\trxPackets\x12\x17\n\x07rx_errs\x18\x04\x20\x01(\x04R\
@@ -1494,7 +1494,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x04R\x06txDrop\x12\x17\n\x07tx_fifo\x18\r\x20\x01(\x04R\x06txFifo\x12\
     \x19\n\x08tx_frame\x18\x0e\x20\x01(\x04R\x07txFrame\x12#\n\rtx_compresse\
     d\x18\x0f\x20\x01(\x04R\x0ctxCompressed\"=\n\x0bNetDevInfos\x12.\n\x05in\
-    fos\x18\x01\x20\x03(\x0b2\x18.agent_os.net.NetDevInfoR\x05infos\"\x97\
+    fos\x18\x01\x20\x03(\x0b2\x18.agent.os.net.NetDevInfoR\x05infos\"\x97\
     \x01\n\x0cSockStatInfo\x12\x1b\n\tuse_count\x18\x01\x20\x01(\x04R\x08use\
     Count\x12\x15\n\x06in_use\x18\x02\x20\x01(\x04R\x05inUse\x12\x16\n\x06or\
     phan\x18\x03\x20\x01(\x04R\x06orphan\x12\x0e\n\x02tw\x18\x04\x20\x01(\
@@ -1510,7 +1510,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20\x01(\rR\x03uid\x12,\n\x12zero_window_probes\x18\n\x20\x01(\rR\x10ze\
     roWindowProbes\x12\x14\n\x05inode\x18\x0b\x20\x01(\x04R\x05inode\x12\x10\
     \n\x03etc\x18\x0c\x20\x01(\tR\x03etc\"9\n\tTcp4Stats\x12,\n\x05stats\x18\
-    \x01\x20\x03(\x0b2\x16.agent_os.net.Tcp4StatR\x05statsb\x06proto3\
+    \x01\x20\x03(\x0b2\x16.agent.os.net.Tcp4StatR\x05statsB'\xaa\x02$InfoGat\
+    herHub.HubProtos.Agent.Os.Netb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

@@ -10,7 +10,7 @@ lazy_static! {
     static ref PROTOBUF_PATH : String = (|| {
         let mut buf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         buf.pop();
-        buf.push("protobuf/agent_os");
+        buf.push("protobuf/agent/os");
         let s = String::from(buf.as_os_str().to_str().unwrap());
         return s;
     })();
@@ -25,7 +25,7 @@ fn agent_os_root_proto_gen(builder : &mut protobuf_codegen::Codegen) -> &mut pro
 
     let gen  = builder.protoc()
     .include(clone_path(protobuf_path, ""))
-    .input(clone_path(protobuf_path, "message.proto"))
+    .input(clone_path(protobuf_path, "os_snap.proto"))
     .input(clone_path(protobuf_path, "net.proto"))
     .cargo_out_dir("src/protos");
 

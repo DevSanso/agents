@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package agent_os.net;
+package agent.os.net;
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Os.Net";
 
