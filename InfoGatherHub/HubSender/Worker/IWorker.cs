@@ -1,7 +1,7 @@
 namespace InfoGatherHub.HubSender.Worker;
 
 
-interface IWorker
+interface IWorker : IDisposable
 {
     void Work();
 }

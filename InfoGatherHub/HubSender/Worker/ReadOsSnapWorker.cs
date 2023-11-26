@@ -56,4 +56,8 @@ public class ReadOsSnapWorker : IWorker
     {
         WorkImpl(this.client, this.sender);
     }
+    public void Dispose()
+    {
+        client.Dispose();
+    }
 }

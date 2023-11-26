@@ -47,9 +47,6 @@ impl <T: Clone> buffer::BufferController<T> for DoubleBuffer<T> {
     }
 }
 
-unsafe impl<T : Clone> Send for DoubleBuffer<T> {}
-unsafe impl<T : Clone> Sync for DoubleBuffer<T> {}
-
 impl<T : Clone > DoubleBuffer<T > {
     pub fn new() -> Arc<RwLock<DoubleBuffer< T >>>{
         let o = DoubleBuffer::<T> {

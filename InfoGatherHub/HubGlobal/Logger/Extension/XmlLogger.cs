@@ -11,20 +11,24 @@ using InfoGatherHub.HubCommon.Display;
 public static class XmlLogger
 {
     private record XmlLogData( LogLevel level,  LogCategory category, string message);
-    private static  string? logPath = null;
+    public static bool IsInit {get;private set;}
     private static Channel<XmlLogData> channel = Channel.CreateUnbounded<XmlLogData>();
     private static LogLevel[] logLevels = new LogLevel[2];
     private static EnumToStringCache<LogLevel> levelCache = new EnumToStringCache<LogLevel>();
     private static EnumToStringCache<LogCategory> categoryCache = new EnumToStringCache<LogCategory>();
     private static IDisplay? display = null;
  
-    public static void InitXml(this ILogger logger, string logPath, IDisplay display)
+    public static void InitXml(this ILogger logger, IDisplay display)
     {
-        XmlLogger.logPath = logPath;
         XmlLogger.display = display;
-        new Thread(new ThreadStart(LogThread));
+
+        new Thread(new ThreadStart(LogThread))
+        {
+            IsBackground = true
+        };
+        IsInit = true;
     }
-    public static void LogThread()
+    private static void LogThread()
     {
         ChannelReader<XmlLogData> reader = channel.Reader;
         XmlDocument xml = new XmlDocument();
@@ -61,7 +65,7 @@ public static class XmlLogger
         }
     }
 
-    public static void LogXml(this ILogger logger,  LogLevel level,  LogCategory category, String message)
+    internal static void LogXml(this ILogger logger,  LogLevel level,  LogCategory category, String message)
     {
         channel.Writer.WriteAsync(new XmlLogData(level, category, message));
     }

@@ -8,7 +8,7 @@ using Google.Protobuf;
 using InfoGatherHub.HubCommon.Format;
 using InfoGatherHub.HubProtos.Agent;
 
-public class SendDataWorker : IWorker, IDisposable
+public class SendDataWorker : IWorker
 {
     TcpClient client;
     ConcurrentQueue<IFormat<Void>> recvice;

@@ -13,7 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <Protobuf Include="..\..\protobuf\agent\os\message.proto" GrpcServices="None" Link="protobuf\agent\os\message.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\os\os_snap.proto" GrpcServices="None" Link="protobuf\agent\os\os_snap.proto"/>
     <Protobuf Include="..\..\protobuf\agent\os\net.proto" GrpcServices="None" Link="protobuf\agent\os\net.proto"/>
 
     <Protobuf Include="..\..\protobuf\agent\snap.proto" GrpcServices="None" Link="protobuf\agent\snap.proto"/>
