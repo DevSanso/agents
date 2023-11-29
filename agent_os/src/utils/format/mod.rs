@@ -1,5 +1,3 @@
-use zstd;
-
 const 	VERTICAL_BAR : u8 = 124;
 
 #[inline]
@@ -12,8 +10,7 @@ pub fn make_format(size : usize,  seq : Box<dyn Iterator<Item = u8>>, data : &[u
     ret.push(VERTICAL_BAR);
     ret.extend(seq);
     ret.push(VERTICAL_BAR);
-    ret.extend(
-        zstd::encode_all(data, 19).unwrap());
+    ret.extend(data);
     
     ret
 }

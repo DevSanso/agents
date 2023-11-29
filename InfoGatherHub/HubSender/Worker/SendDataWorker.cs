@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using Google.Protobuf;
 
 using InfoGatherHub.HubCommon.Format;
+using InfoGatherHub.HubCommon.Compress;
 using InfoGatherHub.HubProtos.Agent;
 
 public class SendDataWorker : IWorker
@@ -33,9 +34,13 @@ public class SendDataWorker : IWorker
                     RawSnap = ByteString.CopyFrom(output.Data()),
                     Format = SnapFormat.Os
                 };
-                stream.Write(snapData.ToByteArray());
-            }
 
+                byte []zip;
+                ICompress comp = new Lz4Compress();
+
+                comp.Compress(snapData.ToByteArray(), out zip);
+                stream.Write(zip);
+            }
         }
     }
     public void Dispose()
