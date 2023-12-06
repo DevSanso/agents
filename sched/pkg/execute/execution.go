@@ -19,24 +19,24 @@ type ScriptExecution struct {
 
 
 
-func NewScriptExecution() (*ScriptExecution, error) {
+func NewScriptExecution(cmdOption string) (*ScriptExecution, error) {
 	pwd, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
-	return &ScriptExecution{scriptExec : "julia", scriptExecOption: "" ,dir : path.Join(pwd, "script") }, nil
+	return &ScriptExecution{scriptExec : "julia", scriptExecOption: cmdOption ,dir : path.Join(pwd, "script") }, nil
 }
 
 func (se *ScriptExecution)mappingScriptPath(schedName string) string {
 	return path.Join(se.dir, schedName+".ji")
 }
 
-func (se *ScriptExecution)Run(name string) error {
-	timeoutCtx, cancel := context.WithTimeout(context.Background(), time.Second * 50)
+func (se *ScriptExecution)Run(name string, processArgs string) error {
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), time.Second * 55)
 	defer cancel()
 
 	cmd := exec.CommandContext(timeoutCtx, 
-		fmt.Sprintf("%s %s %s",se.scriptExec, se.scriptExecOption, se.mappingScriptPath(name)))
+		fmt.Sprintf("%s %s %s %s",se.scriptExecOption, se.scriptExec, processArgs, se.mappingScriptPath(name)))
 	
 	buf := make([]byte, 4096)
 	cmd.Stderr = bytes.NewBuffer(buf)

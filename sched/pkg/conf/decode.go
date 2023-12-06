@@ -2,11 +2,11 @@ package conf
 
 import (
 	"github.com/BurntSushi/toml"
-	"io/ioutil"
+	"os"
 )
 
 func ReadTomlConfig(path string) (*Configure, error) {
-	file,err := ioutil.ReadFile(path)
+	file,err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

@@ -54,7 +54,7 @@ func main() {
 		panic(loggerErr)
 	}
 
-	execution,executeErr := execute.NewScriptExecution()
+	execution,executeErr := execute.NewScriptExecution("")
 	if executeErr != nil {
 		panic(executeErr)
 	}
