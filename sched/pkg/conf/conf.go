@@ -1,5 +1,12 @@
 package conf
 
+
+
+const (
+	LogConfDisplayType = "Display"
+	LogConfFileType = "File"
+)
+
 type Configure struct {
 	DBConfig struct {
 		Host string
@@ -9,8 +16,12 @@ type Configure struct {
 		Password string
 	}
 
+	OdbcDriver string
+	ScriptOption string
+
 	LogConf struct {
-		LogType string //only raw
+		LogType string 
+		LogVar string
 
 		Output struct {
 			OutputType string

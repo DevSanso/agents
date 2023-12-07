@@ -5,19 +5,31 @@ import (
 	"time"
 	"log"
 
-	"sched/pkg/execute"
+	"sched/pkg/global"
+	"sched/pkg/odbc/dsn"
 )
 
-func runSched(list []NextSched, exec *execute.ScriptExecution) (succList []int, failList []struct { id int; err error}) {
+func runSched(list []NextSched) (succList []int, failList []struct { id int; err error}) {
 	if len(list) == 0 {
 		return
 	}
 
 	failList = make([]struct{id int; err error}, 0)
 	succList = make([]int, 0)
-	
+
+	conf := global.GetConfig()
+
+	odbc_dsn := dsn.GenDsn(conf.OdbcDriver,
+		conf.DBConfig.Host, 
+		conf.DBConfig.User, 
+		conf.DBConfig.Password, 
+		conf.DBConfig.DbName, 
+		conf.DBConfig.Port)
+
+	exection := global.Execution()
+
 	for _,sched := range list {
-		err := exec.Run(sched.SchedName)
+		err := exection.Run(sched.SchedName, odbc_dsn)
 
 		if err != nil {
 			log.Println(err.Error())
@@ -31,7 +43,7 @@ func runSched(list []NextSched, exec *execute.ScriptExecution) (succList []int, 
 }
 
 
-func MainLoop(db *sql.DB, scriptExec *execute.ScriptExecution) error {
+func MainLoop(db *sql.DB) error {
 	for {
 		time.Sleep(time.Millisecond * 50)
 
@@ -41,7 +53,7 @@ func MainLoop(db *sql.DB, scriptExec *execute.ScriptExecution) error {
 			continue
 		}
 
-		succ, fail := runSched(schedList, scriptExec)
+		succ, fail := runSched(schedList)
 		
 		for _, succId := range succ {
 			DbInsertSchedLog(db, succId, "succ", "")
@@ -54,7 +66,4 @@ func MainLoop(db *sql.DB, scriptExec *execute.ScriptExecution) error {
 		succ = nil
 		fail = nil		
 	}
-
-
-	return nil
 }

@@ -31,7 +31,7 @@ func (b *Builder)UseFormat(format int) * Builder {
 	return b
 }
 
-func (b *Builder)Builder() (debugLog *log.Logger, errLog *log.Logger) {
+func (b *Builder)Build() (debugLog *log.Logger, errLog *log.Logger) {
 	var formatDebugWriter io.Writer
 	var formatErrWriter io.Writer
 
