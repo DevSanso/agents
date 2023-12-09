@@ -16,13 +16,13 @@ using InfoGatherHub.HubGlobal.Logger;
 
 string configPath = args[1];
 
-var g = GlobalProvider<Config>.Global();
+var g = GlobalProvider<Config,object>.Init(null);
 
 g.LoadToml(configPath);
 
 g.InitXml(new DisplayConsole());
 
-var config = g.GetConfig();
+var config = g.GetConfig()!;
 
 ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>> q = new ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>>();
 
