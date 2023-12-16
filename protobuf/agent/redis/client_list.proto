@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package agnet.redis; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+
+message RedisClientInfo {
+  int32 ID = 1;
+  string Addr = 2;
+  string LocalAddr = 3;
+  int32 FD = 4;
+  string Name = 5;
+  int32 Age = 6;
+  int32 Idle = 7;
+  string Flags = 8;
+  int32 DB = 9;
+  int32 Sub = 10;
+  int32 PSub = 11;
+  int32 SSub = 12;
+  int32 Multi = 13;
+  string QBuf = 14;
+  int32 QBufFree = 15;
+  int32 ArgvMem = 16;
+  int32 MultiMem = 17;
+  int32 RBS = 18;
+  int32 RBP = 19;
+  int32 OBL = 20;
+  int32 OLL = 21;
+  int32 OMem = 22;
+  int32 TotMem = 23;
+  string Events = 24;
+  string Cmd = 25;
+  string User = 26;
+  int32 Redir = 27;
+  int32 Resp = 28;
+  string LibName = 29;
+  string LibVer = 30;
+}
+
+message RedisClientList {
+    repeated RedisClientInfo clients = 1;
+}

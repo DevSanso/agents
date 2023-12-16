@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package agnet.redis; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+
+message DbSize {
+    int64 size = 1;
+}

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package agnet.redis; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+
+enum DataFormat {
+    InfoMemory = 0;
+    InfoCPU = 1;
+    InfoStat = 2;
+    DBSize = 3;
+    ClientLists = 4;
+}
+
+message Data {
+    DataFormat format = 1;
+    bytes raw_data = 2;
+}
+
+message AgentRedisSnap {
+    uint64 unix_epoch = 1;
+    repeated Data datas = 2;
+}

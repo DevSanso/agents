@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package agnet.redis; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+
+message RedisStatsInfo {
+  int32 total_connections_received = 1;
+  int32 total_commands_processed = 2;
+  int32 instantaneous_ops_per_sec = 3;
+  int32 total_net_input_bytes = 4;
+  int32 total_net_output_bytes = 5;
+  int32 total_net_repl_input_bytes = 6;
+  int32 total_net_repl_output_bytes = 7;
+  double instantaneous_input_kbps = 8;
+  double instantaneous_output_kbps = 9;
+  double instantaneous_input_repl_kbps = 10;
+  double instantaneous_output_repl_kbps = 11;
+  int32 rejected_connections = 12;
+  int32 sync_full = 13;
+  int32 sync_partial_ok = 14;
+  int32 sync_partial_err = 15;
+  int32 expired_keys = 16;
+  double expired_stale_perc = 17;
+  int32 expired_time_cap_reached_count = 18;
+  int32 expire_cycle_cpu_milliseconds = 19;
+  int32 evicted_keys = 20;
+  int32 evicted_clients = 21;
+  int32 total_eviction_exceeded_time = 22;
+  int32 current_eviction_exceeded_time = 23;
+  int32 keyspace_hits = 24;
+  int32 keyspace_misses = 25;
+  int32 pubsub_channels = 26;
+  int32 pubsub_patterns = 27;
+  int32 pubsub_shard_channels = 28;
+  int32 latest_fork_usec = 29;
+  int32 total_forks = 30;
+  int32 migrate_cached_sockets = 31;
+  int32 slave_expires_tracked_keys = 32;
+  int32 active_defrag_hits = 33;
+  int32 active_defrag_misses = 34;
+  int32 active_defrag_key_hits = 35;
+  int32 active_defrag_key_misses = 36;
+  int32 total_active_defrag_time = 37;
+  int32 current_active_defrag_time = 38;
+  int32 tracking_total_keys = 39;
+  int32 tracking_total_items = 40;
+  int32 tracking_total_prefixes = 41;
+  int32 unexpected_error_replies = 42;
+  int32 total_error_replies = 43;
+  int32 dump_payload_sanitizations = 44;
+  int32 total_reads_processed = 45;
+  int32 total_writes_processed = 46;
+  int32 io_threaded_reads_processed = 47;
+  int32 io_threaded_writes_processed = 48;
+  int32 reply_buffer_shrinks = 49;
+  int32 reply_buffer_expands = 50;
+  int32 eventloop_cycles = 51;
+  int32 eventloop_duration_sum = 52;
+  int32 eventloop_duration_cmd_sum = 53;
+  int32 instantaneous_eventloop_cycles_per_sec = 54;
+  int32 instantaneous_eventloop_duration_usec = 55;
+  int32 acl_access_denied_auth = 56;
+  int32 acl_access_denied_cmd = 57;
+  int32 acl_access_denied_key = 58;
+  int32 acl_access_denied_channel = 59;
+}

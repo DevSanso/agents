@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package agnet.redis; // 패키지 이름을 설정합니다.
+
+option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+
+message RedisCpuInfo {
+  double UsedCPUSys = 1;
+  double UsedCPUUser = 2;
+  double UsedCPUSysChildren = 3;
+  double UsedCPUUserChildren = 4;
+  double UsedCPUSysMainThread = 5;
+  double UsedCPUUserMainThread = 6;
+}
