@@ -60,7 +60,18 @@ func TestRedisInfoCpu(t *testing.T) {
 
 func TestRedisDbSize(t *testing.T) {
 
-	info, infoErr := commander.GetDbSize(context.Background(),0)
+	info, infoErr := commander.GetDbSize(context.Background(),10)
+	if infoErr != nil {
+		t.Error(infoErr)
+		return
+	}
+	
+	t.Logf("%d\n", info)
+}
+
+func TestRedisMemoryInfo(t *testing.T) {
+
+	info, infoErr := commander.InfoMemory(context.Background())
 	if infoErr != nil {
 		t.Error(infoErr)
 		return

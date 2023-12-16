@@ -18,6 +18,7 @@ type IRedisCoreClientCommander interface {
 	InfoStat(ctx context.Context) (*RedisStatsInfo, error)
 	GetDbSize(ctx context.Context, dbname int) (int64, error)
 	InfoCpu(ctx context.Context) (*RedisCpuInfo, error)
+	InfoMemory(ctx context.Context) (*RedisMemoryInfo, error) 
 }
 
 type IRedisStackClientCommander interface {

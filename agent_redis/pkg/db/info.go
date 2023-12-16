@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"errors"
 )
 
 type RedisCpuInfo struct {
@@ -15,6 +16,61 @@ type RedisCpuInfo struct {
 	UsedCPUSysMainThread  float64
 	UsedCPUUserMainThread float64
 }
+
+type RedisMemoryInfo struct {
+	UsedMemory                int
+	UsedMemoryHuman          string
+	UsedMemoryRSS            int
+	UsedMemoryRSSHuman       string
+	UsedMemoryPeak           int
+	UsedMemoryPeakHuman      string
+	UsedMemoryPeakPerc       string
+	UsedMemoryOverhead       int
+	UsedMemoryStartup        int
+	UsedMemoryDataset        int
+	UsedMemoryDatasetPerc    string
+	AllocatorAllocated       int
+	AllocatorActive          int
+	AllocatorResident        int
+	TotalSystemMemory        int
+	TotalSystemMemoryHuman   string
+	UsedMemoryLua            int
+	UsedMemoryVMEval         int
+	UsedMemoryLuaHuman       string
+	UsedMemoryScriptsEval    int
+	NumberOfCachedScripts    int
+	NumberOfFunctions        int
+	NumberOfLibraries        int
+	UsedMemoryVMFunctions    int
+	UsedMemoryVMTotal        int
+	UsedMemoryVMTotalHuman   string
+	UsedMemoryFunctions      int
+	UsedMemoryScripts        int
+	UsedMemoryScriptsHuman   string
+	MaxMemory                int
+	MaxMemoryHuman           string
+	MaxMemoryPolicy          string
+	AllocatorFragRatio       float64
+	AllocatorFragBytes       int
+	AllocatorRSSRatio        float64
+	AllocatorRSSBytes        int
+	RSSOverheadRatio         float64
+	RSSOverheadBytes         int
+	MemFragmentationRatio    float64
+	MemFragmentationBytes    int
+	MemNotCountedForEvict    int
+	MemReplicationBacklog    int
+	MemTotalReplicationBuffers int
+	MemClientsSlaves        int
+	MemClientsNormal        int
+	MemClusterLinks         int
+	MemAOFBuffer            int
+	MemAllocator            string
+	ActiveDefragRunning     int
+	LazyFreePendingObjects  int
+	LazyFreedObjects        int
+}
+
 
 type RedisStatsInfo struct {
 	TotalConnectionsReceived           int
@@ -77,6 +133,151 @@ type RedisStatsInfo struct {
 	ACLAccessDeniedKey                 int
 	ACLAccessDeniedChannel             int
 }
+
+func parseRedisMemoryInfo(data []string) (*RedisMemoryInfo, error) {
+	if len(data) == 0 {
+		return nil, errors.New("empty data")
+	}
+
+	var redisMemoryInfo = &RedisMemoryInfo{}
+	for _, line := range data {
+		if line == "" {continue}
+
+		fields := strings.Split(line, ":")
+		if len(fields) != 2 {
+			return nil, errors.New("invalid data format :" + line)
+		}
+
+		field, value := strings.TrimSpace(fields[0]), strings.TrimSpace(fields[1])
+		var err error
+
+		switch field {
+		case "used_memory":
+			redisMemoryInfo.UsedMemory, err = strconv.Atoi(value)
+		case "used_memory_human":
+			redisMemoryInfo.UsedMemoryHuman = value
+		case "used_memory_rss":
+			redisMemoryInfo.UsedMemoryRSS, err = strconv.Atoi(value)
+		case "used_memory_rss_human":
+			redisMemoryInfo.UsedMemoryRSSHuman = value
+		case "used_memory_peak":
+			redisMemoryInfo.UsedMemoryPeak, err = strconv.Atoi(value)
+		case "used_memory_peak_human":
+			redisMemoryInfo.UsedMemoryPeakHuman = value
+		case "used_memory_peak_perc":
+			redisMemoryInfo.UsedMemoryPeakPerc = value
+		case "used_memory_overhead":
+			redisMemoryInfo.UsedMemoryOverhead, err = strconv.Atoi(value)
+		case "used_memory_startup":
+			redisMemoryInfo.UsedMemoryStartup, err = strconv.Atoi(value)
+		case "used_memory_dataset":
+			redisMemoryInfo.UsedMemoryDataset, err = strconv.Atoi(value)
+		case "used_memory_dataset_perc":
+			redisMemoryInfo.UsedMemoryDatasetPerc = value
+		case "allocator_allocated":
+			redisMemoryInfo.AllocatorAllocated, err = strconv.Atoi(value)
+		case "allocator_active":
+			redisMemoryInfo.AllocatorActive, err = strconv.Atoi(value)
+		case "allocator_resident":
+			redisMemoryInfo.AllocatorResident, err = strconv.Atoi(value)
+		case "total_system_memory":
+			redisMemoryInfo.TotalSystemMemory, err = strconv.Atoi(value)
+		case "total_system_memory_human":
+			redisMemoryInfo.TotalSystemMemoryHuman = value
+		case "used_memory_lua":
+			redisMemoryInfo.UsedMemoryLua, err = strconv.Atoi(value)
+		case "used_memory_vm_eval":
+			redisMemoryInfo.UsedMemoryVMEval, err = strconv.Atoi(value)
+		case "used_memory_lua_human":
+			redisMemoryInfo.UsedMemoryLuaHuman = value
+		case "used_memory_scripts_eval":
+			redisMemoryInfo.UsedMemoryScriptsEval, err = strconv.Atoi(value)
+		case "number_of_cached_scripts":
+			 redisMemoryInfo.NumberOfCachedScripts, err = strconv.Atoi(value)
+		case "number_of_functions":
+			redisMemoryInfo.NumberOfFunctions, err = strconv.Atoi(value)
+		case "number_of_libraries":
+			redisMemoryInfo.NumberOfLibraries, err = strconv.Atoi(value)
+		case "used_memory_vm_functions":
+			redisMemoryInfo.UsedMemoryVMFunctions, err = strconv.Atoi(value)
+		case "used_memory_vm_total":
+			redisMemoryInfo.UsedMemoryVMTotal, err = strconv.Atoi(value)
+		case "used_memory_vm_total_human":
+			redisMemoryInfo.UsedMemoryVMTotalHuman = value
+		case "used_memory_functions":
+			redisMemoryInfo.UsedMemoryFunctions, err = strconv.Atoi(value)
+		case "used_memory_scripts":
+			redisMemoryInfo.UsedMemoryScripts, err = strconv.Atoi(value)
+		case "used_memory_scripts_human":
+			redisMemoryInfo.UsedMemoryScriptsHuman = value
+		case "maxmemory":
+			redisMemoryInfo.MaxMemory, err = strconv.Atoi(value)
+		case "maxmemory_human":
+			redisMemoryInfo.MaxMemoryHuman = value
+		case "maxmemory_policy":
+			redisMemoryInfo.MaxMemoryPolicy = value
+		case "allocator_frag_ratio":
+			redisMemoryInfo.AllocatorFragRatio, err = strconv.ParseFloat(value, 64)
+		case "allocator_frag_bytes":
+			redisMemoryInfo.AllocatorFragBytes, err = strconv.Atoi(value)
+		case "allocator_rss_ratio":
+			redisMemoryInfo.AllocatorRSSRatio, err = strconv.ParseFloat(value, 64)
+		case "allocator_rss_bytes":
+			redisMemoryInfo.AllocatorRSSBytes, err = strconv.Atoi(value)
+		case "rss_overhead_ratio":
+			redisMemoryInfo.RSSOverheadRatio, err = strconv.ParseFloat(value, 64)
+		case "rss_overhead_bytes":
+			redisMemoryInfo.RSSOverheadBytes, err = strconv.Atoi(value)
+		case "mem_fragmentation_ratio":
+			redisMemoryInfo.MemFragmentationRatio, err = strconv.ParseFloat(value, 64)
+		case "mem_fragmentation_bytes":
+			redisMemoryInfo.MemFragmentationBytes, err = strconv.Atoi(value)
+		case "mem_not_counted_for_evict":
+			redisMemoryInfo.MemNotCountedForEvict, err = strconv.Atoi(value)
+		case "mem_replication_backlog":
+			redisMemoryInfo.MemReplicationBacklog, err = strconv.Atoi(value)
+		case "mem_total_replication_buffers":
+			redisMemoryInfo.MemTotalReplicationBuffers, err = strconv.Atoi(value)
+		case "mem_clients_slaves":
+			redisMemoryInfo.MemClientsSlaves, err = strconv.Atoi(value)
+		case "mem_clients_normal":
+			redisMemoryInfo.MemClientsNormal, err = strconv.Atoi(value)
+		case "mem_cluster_links":
+			redisMemoryInfo.MemClusterLinks, err = strconv.Atoi(value)
+		case "mem_aof_buffer":
+			redisMemoryInfo.MemAOFBuffer, err = strconv.Atoi(value)
+		case "mem_allocator":
+			redisMemoryInfo.MemAllocator = value
+		case "active_defrag_running":
+			redisMemoryInfo.ActiveDefragRunning, err = strconv.Atoi(value)
+		case "lazyfree_pending_objects":
+			redisMemoryInfo.LazyFreePendingObjects, err = strconv.Atoi(value)
+		case "lazyfreed_objects":
+			redisMemoryInfo.LazyFreedObjects, err = strconv.Atoi(value)
+		default:
+			return nil, errors.New("unknown field: " + field)
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return redisMemoryInfo, nil
+}
+
+func (rcc *redisClientCommander) InfoMemory(ctx context.Context) (*RedisMemoryInfo, error) {
+	cmd := rcc.client.Do(ctx, "info", "memory")
+	if cmd.Err() != nil {
+		return nil, cmd.Err()
+	}
+
+	s :=  cmd.String()
+	split := strings.Split(s,"\n")
+
+	return parseRedisMemoryInfo(split[1:])
+}
+
 
 func parseRedisStatsInfo(data map[string]string) (*RedisStatsInfo, error) {
 	var redisStatsInfo = &RedisStatsInfo{}
