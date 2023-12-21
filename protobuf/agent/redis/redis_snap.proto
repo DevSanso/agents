@@ -3,6 +3,7 @@ syntax = "proto3";
 package agnet.redis; // 패키지 이름을 설정합니다.
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+option go_package = "./protos";
 
 enum DataFormat {
     InfoMemory = 0;

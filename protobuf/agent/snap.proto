@@ -3,9 +3,11 @@ syntax = "proto3";
 package agent; // 패키지 이름을 설정합니다.
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent";
+option go_package = "./protos";
 
 enum SnapFormat {
     Os = 0;
+    Redis = 1;
 }
 
 message SnapData {

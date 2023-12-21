@@ -1,8 +1,11 @@
 package db
 
 import (
+	
 	"context"
 	"fmt"
+
+	"agent_redis/pkg/protos"
 )
 
 func getDbSizeDb(rcc *redisClientCommander, ctx context.Context, dbname int) (int64, error) {
@@ -29,10 +32,18 @@ func getDbSizeDbOld(rcc *redisClientCommander, ctx context.Context, dbname int) 
 
 	return sizeCmd.Val(), nil
 }
-func (rcc *redisClientCommander) GetDbSize(ctx context.Context, dbname int) (int64, error) {
+func (rcc *redisClientCommander) GetDbSize(ctx context.Context, dbname int) (*protos.DbSize, error) {
+	size := &protos.DbSize{}
+	var err error
 	if rcc.dbVersion >= 2.6 {
-		return getDbSizeDb(rcc, ctx, dbname)
+		size.Size,err = getDbSizeDb(rcc, ctx, dbname)
 	} else {
-		return getDbSizeDbOld(rcc, ctx, dbname)
+		size.Size,err = getDbSizeDbOld(rcc, ctx, dbname)
 	}
+	if err != nil {
+		size = nil
+		return nil, err
+	}
+
+	return size, err
 }

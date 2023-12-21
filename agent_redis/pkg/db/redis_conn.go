@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+
+	"agent_redis/pkg/protos"
 )
 
 type redisClientCommander struct {
@@ -14,11 +16,11 @@ type redisClientCommander struct {
 }
 
 type IRedisCoreClientCommander interface {
-	GetClientList(ctx context.Context) ([]RedisClientInfo, error)
-	InfoStat(ctx context.Context) (*RedisStatsInfo, error)
-	GetDbSize(ctx context.Context, dbname int) (int64, error)
-	InfoCpu(ctx context.Context) (*RedisCpuInfo, error)
-	InfoMemory(ctx context.Context) (*RedisMemoryInfo, error) 
+	GetClientList(ctx context.Context) (*protos.RedisClientList, error)
+	InfoStat(ctx context.Context) (*protos.RedisStatsInfo, error)
+	GetDbSize(ctx context.Context, dbname int) (*protos.DbSize, error)
+	InfoCpu(ctx context.Context) (*protos.RedisCpuInfo, error)
+	InfoMemory(ctx context.Context) (*protos.RedisMemoryInfo, error) 
 }
 
 type IRedisStackClientCommander interface {
