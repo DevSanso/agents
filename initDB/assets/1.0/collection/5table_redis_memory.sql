@@ -1,4 +1,4 @@
-create table redis.redis_memory (
+create table collection_redis.redis_memory (
     target_id int,
     collection_time timestamp,
     used_memory int8,
@@ -54,4 +54,4 @@ create table redis.redis_memory (
     lazy_freed_objects int8
 ) partition by range(collection_time);
 
-create index redis_memory_idx on redis.redis_client(target_id, collection_time);
+create index redis_memory_idx on collection_redis.redis_client(target_id, collection_time);

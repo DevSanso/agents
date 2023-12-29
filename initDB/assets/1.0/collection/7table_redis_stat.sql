@@ -1,4 +1,4 @@
-create table redis.redis_stat (
+create table collection_redis.redis_stat (
     target_id int,
     collection_time timestamp,
     total_connections_received int8,
@@ -62,4 +62,4 @@ create table redis.redis_stat (
     acl_access_denied_channel int8
 )partition by range(collection_time);
 
-create index redis_stat_idx on redis.redis_stat(target_id, collection_time);
+create index redis_stat_idx on collection_redis.redis_stat(target_id, collection_time);

@@ -1,4 +1,4 @@
-create compression lz4 table redis.redis_cpu (
+create table collection_redis.redis_cpu (
     target_id int,
     collection_time timestamp,
     use_cpu_sys numeric,
@@ -9,4 +9,4 @@ create compression lz4 table redis.redis_cpu (
     use_cpu_user_main numeric
 ) partition by range(collection_time);
 
-create index redis_cpu_idx on redis.redis_cpu(target_id, collection_time);
+create index redis_cpu_idx on collection_redis.redis_cpu(target_id, collection_time);

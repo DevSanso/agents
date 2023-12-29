@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "nodejs ./build.js"
   },
   "author": "",
   "license": "MIT",
@@ -13,6 +14,7 @@
     "@types/pg": "^8.10.9",
     "esbuild": "^0.19.10",
     "pg": "^8.11.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

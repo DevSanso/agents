@@ -28,10 +28,10 @@ export class AssetsPathDir {
         this.version = version;
         this.prefix  = prefix;   
     }
-    public dir = () : string => path.join(this.root, this.version, this.prefix);
-    public getFilePaths = (): Array<string> => fs.readdirSync(path.join(this.root, this.version, this.prefix));
+    public dir = () : string => path.join(this.root, "assets",this.version, this.prefix);
+    public getFilePaths = (): Array<string> => fs.readdirSync(path.join(this.root, "assets",this.version, this.prefix));
 
     public getFileSortPaths = (lessFunc: (l: string, r: string) => boolean) => 
-        quickSort(fs.readdirSync(path.join(this.root, this.version, this.prefix)), lessFunc);
+        quickSort(fs.readdirSync(path.join(this.root, "assets", this.version, this.prefix)), lessFunc);
 
 }

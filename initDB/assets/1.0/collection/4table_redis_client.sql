@@ -1,4 +1,4 @@
-create table redis.redis_client (
+create table collection_redis.redis_client (
   target_id int,
   collection_time timestamp,
   id int8,
@@ -26,11 +26,11 @@ create table redis.redis_client (
   tot_mem int8,
   events varchar(255),
   cmd varchar(255),
-  user varchar(255),
+  redis_user varchar(255),
   redir int8,
   resp int8,
   lib_name varchar(255),
   lib_ver varchar(255)
 ) partition by range(collection_time);
 
-create index redis_client_idx on redis.redis_client(target_id, collection_time, id);
+create index redis_client_idx on collection_redis.redis_client(target_id, collection_time, id);
