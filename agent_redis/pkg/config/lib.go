@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	LogFilePath string
 	Redis RedisConfig
 	Sender SenderConfig
 }
