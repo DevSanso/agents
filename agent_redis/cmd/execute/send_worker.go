@@ -1,8 +1,9 @@
 package main
 
 import (
-	"net"
+	"agent_redis/pkg/worker"
 	"fmt"
+	"net"
 	"os"
 	"time"
 )
@@ -27,7 +28,7 @@ func (t *TcpSendWorker)Close() error {
 	return t.client.Close()
 }
 
-func (t *TcpSendWorker)Work(args ...interface{}) ([]byte, error) {
+func (t *TcpSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
 	data, ok := args[0].([]byte)
 	if !ok {
 		return nil, os.ErrInvalid

@@ -3,6 +3,8 @@ package worker
 import (
 	"time"
 	"context"
+
+	"agent_redis/pkg/global/log"
 )
 type cmdWorkerInfo struct {
 	w IWorker
@@ -11,7 +13,10 @@ type cmdWorkerInfo struct {
 }
 type WorkerManager struct {
 	senderWorker IWorker
-	sendChannel chan []byte
+	middleWareWorker IWorker
+
+	middleChannel chan *WorkerResponse
+	sendChannel chan *WorkerResponse
 
 	commandWorkers []cmdWorkerInfo
 }
@@ -20,7 +25,10 @@ type WorkerManagerBuilder struct {
 }
 
 func NewWorkerManagerBuilder() *WorkerManagerBuilder {
-	return &WorkerManagerBuilder{wm : new(WorkerManager)}
+	b := &WorkerManagerBuilder{wm : new(WorkerManager)}
+	b.wm.commandWorkers = make([]cmdWorkerInfo, 0)
+
+	return b
 }
 
 func (b *WorkerManagerBuilder)AddCmdWorker(cmdWorker  IWorker, interval time.Duration) *WorkerManagerBuilder {
@@ -33,9 +41,18 @@ func (b *WorkerManagerBuilder)SendWorker(w IWorker) *WorkerManagerBuilder {
 	return b
 }
 
+func (b *WorkerManagerBuilder)MiddleWareWorker(w IWorker) *WorkerManagerBuilder {
+	b.wm.middleWareWorker = w
+	return b
+}
+
 func (b *WorkerManagerBuilder)Build() *WorkerManager {
 	wm := b.wm
 	b.wm = nil
+	
+	wm.middleChannel = make(chan *WorkerResponse)
+	wm.sendChannel = make(chan *WorkerResponse)
+
 	return wm
 }
 
@@ -65,21 +82,23 @@ func (wm *WorkerManager)getNotRunWorkerIndex(idxs []int, output []int) {
 func (wm *WorkerManager)getIntervalWorkersIndex(output []int) {
 	outputIdx := 0
 	for i,ele := range wm.commandWorkers {
-		if float64(time.Now().Second()) / ele.interval.Seconds() <= 0.1 {
+		if time.Now().UnixMilli() % ele.interval.Milliseconds()  <= 100 {
 			output[outputIdx] = i
 			outputIdx += 1
 		}
 	}
 }
-func runCmdWorker(cmd *cmdWorkerInfo, recv chan <-[]byte) {
+func runCmdWorker(cmd *cmdWorkerInfo, recv chan <- *WorkerResponse) {
 	var cancel context.CancelFunc
 	cmd.ctx, cancel = context.WithCancel(context.Background())
+	defer cancel()
+
 	by,err := cmd.w.Work()
 	if err != nil {
-		panic(err)
+		log.GetLogger().Error(err.Error())
+		return
 	}
 	recv <- by
-	cancel()
 }
 
 func(wm *WorkerManager)cmdWorkerLoop() {
@@ -92,28 +111,56 @@ func(wm *WorkerManager)cmdWorkerLoop() {
 
 		for _,idx := range willRunWokers {
 			work := wm.commandWorkers[idx]
-			var recv chan <- []byte = wm.sendChannel
+			var recv chan <- *WorkerResponse = wm.middleChannel
 			go runCmdWorker(&work, recv)
 		}
 		
 		intervalWorkers = nil
 		willRunWokers = nil
-		
+	}
+}
+
+func (wm *WorkerManager)middleWorkerLoop() {
+	var res *WorkerResponse = nil
+	var err error = nil
+
+	for {
+		select {
+		case snap := <- wm.middleChannel:
+			res,err = wm.middleWareWorker.Work(snap)
+		default:
+			res,err = wm.middleWareWorker.Work(nil)
+		}
+		if err != nil {
+			log.GetLogger().Error(err.Error())
+		}
+
+		if res != nil {
+			wm.sendChannel <- res
+		}
+
+		res = nil
+		err = nil
+		time.Sleep(time.Microsecond * 5)
 	}
 }
 
 func (wm *WorkerManager)sendWorkerLoop() {
 	for {
-		wm.senderWorker.Work(<-wm.sendChannel)
+		_,err := wm.senderWorker.Work(<-wm.sendChannel)
+		if err != nil {
+			log.GetLogger().Error(err.Error())
+		}
 		time.Sleep(time.Microsecond * 10)
 	}
 }
 
 func (wm *WorkerManager)mainLoop() {
 	go wm.cmdWorkerLoop()
+	go wm.middleWorkerLoop()
 	go wm.sendWorkerLoop()
 
 	for {
-		time.Sleep(time.Microsecond * 10)
+		time.Sleep(time.Second * 1)
 	}
 }
