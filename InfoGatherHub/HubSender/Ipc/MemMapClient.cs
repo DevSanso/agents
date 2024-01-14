@@ -1,4 +1,4 @@
-namespace InfoGatherHub.HubSender.Snap;
+namespace InfoGatherHub.HubSender.Ipc;
 
 using System;
 using System.IO;
@@ -21,7 +21,7 @@ public class MemMapClient : ISnapClient
             accessor?.ReadArray<byte>(0, buffer, 0, size);
         }
     }
-    public byte[] getSnapData()
+    public byte[]? getSnapData()
     {
         byte []ret = new byte[size];
         ret.CopyTo(this.buffer, 0);

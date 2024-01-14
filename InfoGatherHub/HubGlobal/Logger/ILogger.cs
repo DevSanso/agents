@@ -1,11 +1,12 @@
 namespace InfoGatherHub.HubGlobal.Logger;
 
-using InfoGatherHub.HubGlobal.Logger.Extension.Xml;
+using InfoGatherHub.HubGlobal.Logger.Extension.Line;
 
 public enum LogLevel
 {
-    Debug,
-    Error
+    Error = 0,
+    Info = 1,
+    Debug = 2
 }
 public enum LogCategory
 {
@@ -20,6 +21,6 @@ public static class LoggerCaller
 {
     public static void Log(this ILogger logger, LogLevel level,  LogCategory category, String message)
     {
-        if(XmlLogger.IsInit == true)logger.LogXml(level, category, message);
+        if(LineLogger.IsInit == true)logger.LogLine(level, category, message);
     }
 }

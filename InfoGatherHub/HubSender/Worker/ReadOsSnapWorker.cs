@@ -2,7 +2,7 @@ namespace InfoGatherHub.HubSender.Worker;
 
 using System.Collections.Concurrent;
 
-using InfoGatherHub.HubSender.Snap;
+using InfoGatherHub.HubSender.Ipc;
 using InfoGatherHub.HubCommon.Format;
 public class ReadOsSnapWorker : IWorker
 {
@@ -38,17 +38,17 @@ public class ReadOsSnapWorker : IWorker
     private void WorkImpl(ISnapClient client, ConcurrentQueue<IFormat<Void>> sender)
     {
         client.fetchSnapData();
-        byte[] data = client.getSnapData();
+        byte[]? data = client.getSnapData();
 
-        UInt64 seq = ParsingSeq(data);
+        UInt64 seq = ParsingSeq(data!);
         
         if(currentSeq == seq) return;
 
         currentSeq = seq;
 
-        UInt32 size = ParsingSize(data);
+        UInt32 size = ParsingSize(data!);
 
-        byte[] sendData = ParsingData(data, (int)size);
+        byte[] sendData = ParsingData(data!, (int)size);
 
         sender.Enqueue(new Format("OS", sendData));
     }

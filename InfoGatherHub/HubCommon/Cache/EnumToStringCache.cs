@@ -6,7 +6,7 @@ public class EnumToStringCache<T> where T :  System.Enum
 {
     private Dictionary<T, string> dict = new Dictionary<T, string>();
 
-    public string get(T value)
+    public string Get(T value)
     {
         string? output = "";
 

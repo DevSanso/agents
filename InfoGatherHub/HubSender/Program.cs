@@ -4,11 +4,11 @@ using System.Threading;
 using System.Collections.Concurrent;
 
 using InfoGatherHub.HubCommon.Format;
-using InfoGatherHub.HubGlobal.Logger.Extension.Xml;
+using InfoGatherHub.HubGlobal.Logger.Extension.Line;
 using InfoGatherHub.HubGlobal.Config.Extension.Toml;
 using InfoGatherHub.HubGlobal;
 using InfoGatherHub.HubSender;
-using InfoGatherHub.HubSender.Snap;
+using InfoGatherHub.HubSender.Ipc;
 using InfoGatherHub.HubCommon.Display;
 using InfoGatherHub.HubGlobal.Config;
 using InfoGatherHub.HubSender.Worker;
@@ -20,7 +20,7 @@ var g = GlobalProvider<Config,object>.Init(null);
 
 g.LoadToml(configPath);
 
-g.InitXml(new DisplayConsole());
+g.InitLogLine(new DisplayConsole());
 
 var config = g.GetConfig()!;
 

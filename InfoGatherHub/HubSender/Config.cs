@@ -1,10 +1,18 @@
 namespace InfoGatherHub.HubSender;
 
-record SnapInfoSetting
+record MMapSnapIpcConfig
 {
+    public bool isUsed = false;
     public string path = "";
     public int size = 0;
 }
+
+record TcpSnapIpcConfig
+{
+    public bool isUsed = false;
+    public int port = 0;
+}
+
 record LogSetting
 {
     public string type = "";
@@ -20,6 +28,7 @@ record HubServerSetting
 record Config
 {
     public LogSetting logSetting = new LogSetting();
-    public SnapInfoSetting osSnapSetting = new SnapInfoSetting();
+    public MMapSnapIpcConfig osSnapSetting = new MMapSnapIpcConfig();
+    public TcpSnapIpcConfig tcpSnapServerSetting = new TcpSnapIpcConfig();
     public HubServerSetting hubServerSetting = new HubServerSetting();
 }
