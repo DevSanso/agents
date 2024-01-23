@@ -14,14 +14,14 @@ public class MemMapClient : ISnapClient
         this.size = size;
         buffer = new byte[size];
     }
-    public void fetchSnapData()
+    public void FetchSnapData()
     {
         using(var accessor = snap?.CreateViewAccessor(0, size,MemoryMappedFileAccess.Read))
         {
             accessor?.ReadArray<byte>(0, buffer, 0, size);
         }
     }
-    public byte[]? getSnapData()
+    public byte[]? GetSnapData()
     {
         byte []ret = new byte[size];
         ret.CopyTo(this.buffer, 0);

@@ -37,8 +37,8 @@ public class ReadOsSnapWorker : IWorker
     }
     private void WorkImpl(ISnapClient client, ConcurrentQueue<IFormat<Void>> sender)
     {
-        client.fetchSnapData();
-        byte[]? data = client.getSnapData();
+        client.FetchSnapData();
+        byte[]? data = client.GetSnapData();
 
         UInt64 seq = ParsingSeq(data!);
         

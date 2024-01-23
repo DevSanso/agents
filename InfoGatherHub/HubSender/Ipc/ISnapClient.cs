@@ -2,6 +2,6 @@ namespace InfoGatherHub.HubSender.Ipc;
 
 public interface ISnapClient : IDisposable
 {
-    void fetchSnapData();
-    byte[]? getSnapData();
+    void FetchSnapData();
+    byte[]? GetSnapData();
 }
