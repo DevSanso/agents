@@ -1,11 +1,13 @@
 package main
 
 import (
-	"agent_redis/pkg/worker"
 	"fmt"
 	"net"
 	"os"
 	"time"
+
+	"agent_redis/pkg/worker"
+	"agent_redis/pkg/ipc"
 )
 
 type TcpSendWorker struct {
@@ -36,6 +38,34 @@ func (t *TcpSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error)
 	deadline := time.Now().Add(time.Second * 3)
 	t.client.SetWriteDeadline(deadline)
 	_, err := t.client.Write(data)
+
+	return nil, err
+}
+
+type MmapSendWorker struct {
+	client ipc.IMemMapFile
+}
+
+func NewMmapSendWorker(filename string, size int) (*MmapSendWorker, error) {
+	c, err := ipc.MemMapFileOpen(filename, int64(size))
+	if err != nil {
+		return nil, err
+	}
+	return &MmapSendWorker{
+		client: c,
+	}, nil
+}
+
+func (t *MmapSendWorker)Close() error {
+	return t.client.Close()
+}
+
+func (t *MmapSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
+	data, ok := args[0].([]byte)
+	if !ok {
+		return nil, os.ErrInvalid
+	}
+	_,err := t.client.Write(data)
 
 	return nil, err
 }

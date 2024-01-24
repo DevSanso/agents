@@ -20,11 +20,33 @@ func main() {
 		panic(err)
 	}
 
-	sendWorker, workerErr := NewTcpSendWorker(cfg.Sender.Ip, cfg.Sender.Port)
-	if workerErr != nil {
-		log.GetLogger().Error(workerErr.Error())
+	var cfgFuncCaller func() (string,int,error) = nil
+	if cfg.Sender.SendType == "TCP" {
+		cfgFuncCaller = cfg.Sender.TcpConfig
+	}else {
+		cfgFuncCaller = cfg.Sender.MmapConfig
+	}
+
+	strval,intval, cfgErr := cfgFuncCaller()
+	if cfgErr != nil {
+		log.GetLogger().Error(cfgErr.Error())
 		os.Exit(2)
 	}
+
+	var sendWorker worker.IWorker = nil
+	var sendWorkerErr error = nil
+
+	if cfg.Sender.SendType == "TCP" {
+		sendWorker,sendWorkerErr = NewTcpSendWorker(strval, intval)
+	}else {
+		sendWorker,sendWorkerErr = NewMmapSendWorker(strval, intval)
+	}
+
+	if sendWorkerErr != nil {
+		log.GetLogger().Error(sendWorkerErr.Error())
+		os.Exit(2)
+	}
+	
 	middleWareWorker := NewMiddleWareWorker()
 	clientInfoCmdWorker := NewClientInfoWorker()
 

@@ -4,16 +4,20 @@ import (
 	"time"
 	"os"
 	"sync"
+	"sync/atomic"
+	"math"
 
 	"google.golang.org/protobuf/proto"
 
 	"agent_redis/pkg/worker"
 	"agent_redis/pkg/protos"
+	"agent_redis/pkg/format"
 )
 
 type MiddleWareWorker struct {
 	buf map[int][]byte
 	mutex sync.Mutex
+	seq int64
 }
 
 func NewMiddleWareWorker() *MiddleWareWorker {
@@ -43,17 +47,18 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 		return nil, err
 	}
 
-	last := protos.SnapData{}
-	last.Format = protos.SnapFormat_Redis
-	last.RawSnap = redisSnapBytes
+	formatSeq := atomic.AddInt64(&t.seq, 1)
+	if formatSeq >= math.MaxInt {atomic.StoreInt64(&t.seq, 0)}
+	
+	output, outputErr := format.MakeFormat(int(formatSeq), redisSnapBytes)
 
-	snapByte, snapErr := proto.Marshal(&last)
-	if snapErr != nil {
-		return nil, snapErr
+	if outputErr != nil{
+		return nil, outputErr
 	}
+
 	return &worker.WorkerResponse{
 		DType: int(protos.SnapFormat_Redis),
-		Data: snapByte,
+		Data: output,
 	}, nil
 }
 func (t *MiddleWareWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
