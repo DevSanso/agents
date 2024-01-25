@@ -37,7 +37,11 @@ public static class LineLogger
         LineLogData? logData = null;
         while(true)
         {
-            if(reader.TryRead(out logData) == false) continue;
+            if(reader.TryRead(out logData) == false) 
+            {
+                Thread.Sleep(10);
+                continue;
+            }
 
             string current = DateTime.Now.ToString();
             string level = levelCache.Get(logData.level);
