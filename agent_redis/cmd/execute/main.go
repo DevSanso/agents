@@ -37,7 +37,9 @@ func main() {
 	var sendWorkerErr error = nil
 
 	if cfg.Sender.SendType == "TCP" {
-		sendWorker,sendWorkerErr = NewTcpSendWorker(strval, intval)
+		//sendWorker,sendWorkerErr = NewTcpSendWorker(strval, intval)
+		log.GetLogger().Error("not support TCP Snap IPC")
+		os.Exit(2)
 	}else {
 		sendWorker,sendWorkerErr = NewMmapSendWorker(strval, intval)
 	}

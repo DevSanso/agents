@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 )
 
-func MakeFormat(seq int, data []byte) ([]byte, error) {
+func MakeFormat(seq uint64, data []byte) ([]byte, error) {
 	temp := &bytes.Buffer{}
 	buf := bufio.NewWriter(temp)
 
@@ -16,7 +16,7 @@ func MakeFormat(seq int, data []byte) ([]byte, error) {
 		return nil, lErr
 	}
 	buf.WriteByte(':')
-	err := binary.Write(buf, binary.LittleEndian, uint32(seq))
+	err := binary.Write(buf, binary.LittleEndian, seq)
 	if err != nil {
 		return nil ,err
 	}

@@ -28,7 +28,8 @@ record HubServerSetting
 record Config
 {
     public LogSetting logSetting = new LogSetting();
-    public MMapSnapIpcConfig osSnapSetting = new MMapSnapIpcConfig();
-    public TcpSnapIpcConfig tcpSnapServerSetting = new TcpSnapIpcConfig();
+    public MMapSnapIpcConfig? osSnapSetting = new MMapSnapIpcConfig();
+    public MMapSnapIpcConfig? redisSnapSetting = new MMapSnapIpcConfig();
+    //public TcpSnapIpcConfig? tcpSnapServerSetting = new TcpSnapIpcConfig();
     public HubServerSetting hubServerSetting = new HubServerSetting();
 }

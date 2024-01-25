@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 using InfoGatherHub.HubCommon.Format;
@@ -14,7 +15,11 @@ using InfoGatherHub.HubGlobal.Config;
 using InfoGatherHub.HubSender.Worker;
 using InfoGatherHub.HubGlobal.Logger;
 
+
 string configPath = args[1];
+
+List<IWorker> snapWorkers = new List<IWorker>();
+List<Timer> snapTimers = new List<Timer>();
 
 var g = GlobalProvider<Config,object>.Init(null);
 
@@ -26,15 +31,31 @@ var config = g.GetConfig()!;
 
 ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>> q = new ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>>();
 
-IWorker osSnapWorker = new ReadOsSnapWorker(new MemMapClient(config.osSnapSetting.path, config.osSnapSetting.size), q);
-IWorker sendDataWorker = new SendDataWorker(new TcpClient(config.hubServerSetting.ip, config.hubServerSetting.port), q);
+if(config.osSnapSetting != null) {
+    IWorker osSnapWorker = new ReadOsSnapWorker(new MemMapClient(config.osSnapSetting.path, config.osSnapSetting.size), q);
+    Timer osSnapTimer = new Timer(
+        state => ((IWorker?)state)?.Work(),
+        osSnapWorker,
+        TimeSpan.Zero,
+        TimeSpan.FromMilliseconds(1050)
+    );
+    snapTimers.Add(osSnapTimer);
+    snapWorkers.Add(osSnapWorker);
+}
 
-Timer osSnapTimer = new Timer(
-    state => ((IWorker?)state)?.Work(),
-    osSnapWorker,
-    TimeSpan.Zero,
-    TimeSpan.FromMilliseconds(1050)
-);
+if(config.redisSnapSetting != null) {
+    IWorker redisSnapWorker = new ReadRedisSnapWorker(new MemMapClient(config.redisSnapSetting.path, config.redisSnapSetting.size), q);
+    Timer redisSnapTimer = new Timer(
+        state => ((IWorker?)state)?.Work(),
+        redisSnapWorker,
+        TimeSpan.Zero,
+        TimeSpan.FromMilliseconds(1050)
+    );
+    snapTimers.Add(redisSnapTimer);
+    snapWorkers.Add(redisSnapWorker);
+}
+
+IWorker sendDataWorker = new SendDataWorker(new TcpClient(config.hubServerSetting.ip, config.hubServerSetting.port), q);
 
 Timer sendDataTimer = new Timer(
     state => ((IWorker?)state)?.Work(),
@@ -47,10 +68,18 @@ Console.CancelKeyPress += (sender, e) =>
 {
     g.Log(LogLevel.Debug, LogCategory.ALL, "HubSender signal ctrl + c");
 
-    osSnapTimer.Dispose();
     sendDataTimer.Dispose();
-    osSnapWorker.Dispose();
     sendDataWorker.Dispose();
+
+    foreach(var timer in snapTimers)
+    {
+        timer.Dispose();
+    }
+
+    foreach(var worker in snapWorkers)
+    {
+        worker.Dispose();
+    }
 
     g.Log(LogLevel.Debug, LogCategory.ALL, "HubSender is shutdown now");
     Environment.Exit(0);
@@ -58,7 +87,7 @@ Console.CancelKeyPress += (sender, e) =>
 
 while(true)
 {
-    Thread.Sleep(100);
+    Thread.Sleep(1000);
 }
 
 

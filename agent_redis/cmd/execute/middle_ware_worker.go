@@ -17,7 +17,7 @@ import (
 type MiddleWareWorker struct {
 	buf map[int][]byte
 	mutex sync.Mutex
-	seq int64
+	seq uint64
 }
 
 func NewMiddleWareWorker() *MiddleWareWorker {
@@ -47,10 +47,10 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 		return nil, err
 	}
 
-	formatSeq := atomic.AddInt64(&t.seq, 1)
-	if formatSeq >= math.MaxInt {atomic.StoreInt64(&t.seq, 0)}
+	formatSeq := atomic.AddUint64(&t.seq, 1)
+	if formatSeq >= math.MaxUint64 {atomic.StoreUint64(&t.seq, 0)}
 	
-	output, outputErr := format.MakeFormat(int(formatSeq), redisSnapBytes)
+	output, outputErr := format.MakeFormat(formatSeq, redisSnapBytes)
 
 	if outputErr != nil{
 		return nil, outputErr
