@@ -41,6 +41,20 @@ public class SendDataWorker : IWorker
                 comp.Compress(snapData.ToByteArray(), out zip);
                 stream.Write(zip);
             }
+            else if(objectName == "REDIS")
+            {
+                SnapData snapData = new SnapData()
+                {
+                    RawSnap = ByteString.CopyFrom(output.Data()),
+                    Format = SnapFormat.Redis
+                };
+
+                byte []zip;
+                ICompress comp = new Lz4Compress();
+
+                comp.Compress(snapData.ToByteArray(), out zip);
+                stream.Write(zip);
+            }
         }
     }
     public void Dispose()
