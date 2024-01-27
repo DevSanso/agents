@@ -9,16 +9,17 @@ public class MemMapClient : ISnapClient
     private int size = 0;
     private byte[] buffer;
     public MemMapClient(string pathname, int size)
-    {
-        snap = MemoryMappedFile.CreateFromFile(pathname,FileMode.Open);
+    {  
+        snap = MemoryMappedFile.CreateFromFile(File.Open(pathname, FileMode.Open, FileAccess.Read), 
+            null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
         this.size = size;
         buffer = new byte[size];
     }
     public void FetchSnapData()
     {
-        using(var accessor = snap?.CreateViewAccessor(0, size,MemoryMappedFileAccess.Read))
+        using(var accessor = snap!.CreateViewStream(0, this.size, MemoryMappedFileAccess.CopyOnWrite))
         {
-            accessor?.ReadArray<byte>(0, buffer, 0, size);
+            accessor!.Read(buffer,0, size);
         }
     }
     public byte[]? GetSnapData()
@@ -32,5 +33,4 @@ public class MemMapClient : ISnapClient
     {
         snap?.Dispose();
     }
-
 }

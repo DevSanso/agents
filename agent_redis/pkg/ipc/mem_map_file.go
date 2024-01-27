@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"sync"
 	"syscall"
+	"time"
 )
 
 type IMemMapFile interface {
@@ -14,8 +15,29 @@ type IMemMapFile interface {
 
 type memMapFileImpl struct {
 	ptr []byte
+	fd uintptr
 	size int64
 	mutex *sync.Mutex
+}
+
+func (mmfi *memMapFileImpl)tryFileLock() (err error) {
+	for cnt := 0 ; cnt < 2; cnt ++ {
+		err = syscall.Flock(int(mmfi.fd), syscall.LOCK_EX | syscall.LOCK_NB)
+		if err == nil {
+			break
+		}
+
+		if !syscall.ENOLCK.Is(err) || !syscall.EWOULDBLOCK.Is(err) {
+			break
+		}
+
+		time.Sleep(time.Microsecond * 100)
+	}
+	return 
+}
+
+func (mmfi *memMapFileImpl)blockingFileUnLock() error {
+	return syscall.Flock(int(mmfi.fd), syscall.LOCK_UN)
 }
 
 func (mmfi *memMapFileImpl)Write(b []byte) (n int, err error) {
@@ -25,6 +47,12 @@ func (mmfi *memMapFileImpl)Write(b []byte) (n int, err error) {
 	}
 	mmfi.mutex.Lock()
 	defer mmfi.mutex.Unlock()
+
+	err = mmfi.tryFileLock()
+	if err != nil {
+		return
+	}
+	defer mmfi.blockingFileUnLock()
 
 	n = copy(mmfi.ptr, b)
 	return
@@ -53,8 +81,8 @@ func MemMapFileOpen(filename string, size int64) (IMemMapFile, error) {
 	if resizeErr != nil {
 		return nil, resizeErr
 	}
-
-	data, mmapErr := syscall.Mmap(int(f.Fd()), 0, int(size), syscall.PROT_WRITE, syscall.MAP_SHARED);
+	fd := f.Fd()
+	data, mmapErr := syscall.Mmap(int(fd), 0, int(size), syscall.PROT_WRITE, syscall.MAP_SHARED);
 	if mmapErr != nil {
 		return nil, mmapErr
 	}
@@ -62,6 +90,7 @@ func MemMapFileOpen(filename string, size int64) (IMemMapFile, error) {
 		ptr : data,
 		size : size,
 		mutex: new(sync.Mutex),
+		fd : fd,
 	}
 	runtime.SetFinalizer(ret, ret.Close())
 	return ret,nil
