@@ -1,11 +1,12 @@
 package db
 
 import (
+	"agent_redis/pkg/protos"
 	"context"
 	"fmt"
 	"strconv"
 	"strings"
-	"agent_redis/pkg/protos"
+	"time"
 )
 
 func parseRedisClientInfo(input string) (*protos.RedisClientInfo, error) {
@@ -99,6 +100,7 @@ func convertStringListToRedisClientInfoList(input []string) (*protos.RedisClient
 
 	ret := &protos.RedisClientList{}
 	ret.Clients = list
+	ret.UnixEpoch = uint64(time.Now().Unix())
 
 	return ret, nil
 }

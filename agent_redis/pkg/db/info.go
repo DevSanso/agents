@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func parseRedisMemoryInfo(data []string) (*protos.RedisMemoryInfo, error) {
@@ -139,7 +140,7 @@ func parseRedisMemoryInfo(data []string) (*protos.RedisMemoryInfo, error) {
 			return nil, err
 		}
 	}
-
+	redisMemoryInfo.UnixEpoch = uint64(time.Now().Unix())
 	return redisMemoryInfo, nil
 }
 
@@ -282,7 +283,7 @@ func parseRedisStatsInfo(data map[string]string) (*protos.RedisStatsInfo, error)
 			// 알 수 없는 필드는 무시
 		}
 	}
-
+	redisStatsInfo.UnixEpoch = uint64(time.Now().Unix())
 	return redisStatsInfo, nil
 }
 func (rcc *redisClientCommander) InfoStat(ctx context.Context) (*protos.RedisStatsInfo, error) {
@@ -330,7 +331,7 @@ func parseCPUInfo(data []string) (*protos.RedisCpuInfo, error) {
 			return nil, fmt.Errorf("unknown key: %s", key)
 		}
 	}
-
+	cpuInfo.UnixEpoch = uint64(time.Now().Unix())
 	return cpuInfo, nil
 }
 

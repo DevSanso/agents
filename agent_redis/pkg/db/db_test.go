@@ -66,7 +66,7 @@ func TestRedisDbSize(t *testing.T) {
 		return
 	}
 	
-	t.Logf("%d\n", info)
+	t.Logf("%+v\n", info)
 }
 
 func TestRedisMemoryInfo(t *testing.T) {

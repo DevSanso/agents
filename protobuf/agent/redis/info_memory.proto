@@ -57,4 +57,5 @@ message RedisMemoryInfo {
     int64 active_defrag_running = 49;
     int64 lazy_free_pending_objects = 50;
     int64 lazy_freed_objects = 51;
+    uint64 unix_epoch = 52;
   }

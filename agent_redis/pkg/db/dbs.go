@@ -1,9 +1,9 @@
 package db
 
 import (
-	
 	"context"
 	"fmt"
+	"time"
 
 	"agent_redis/pkg/protos"
 )
@@ -44,6 +44,6 @@ func (rcc *redisClientCommander) GetDbSize(ctx context.Context, dbname int) (*pr
 		size = nil
 		return nil, err
 	}
-
+	size.UnixEpoch = uint64(time.Now().Unix())
 	return size, err
 }

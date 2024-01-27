@@ -40,4 +40,5 @@ message RedisClientInfo {
 
 message RedisClientList {
     repeated RedisClientInfo clients = 1;
+    uint64 unix_epoch = 2;
 }

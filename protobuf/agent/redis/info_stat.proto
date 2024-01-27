@@ -65,4 +65,5 @@ message RedisStatsInfo {
   int64 acl_access_denied_cmd = 57;
   int64 acl_access_denied_key = 58;
   int64 acl_access_denied_channel = 59;
+  uint64 unix_epoch = 60;
 }

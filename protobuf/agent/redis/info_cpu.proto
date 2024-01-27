@@ -12,4 +12,5 @@ message RedisCpuInfo {
   double UsedCPUUserChildren = 4;
   double UsedCPUSysMainThread = 5;
   double UsedCPUUserMainThread = 6;
+  uint64 unix_epoch = 7;
 }

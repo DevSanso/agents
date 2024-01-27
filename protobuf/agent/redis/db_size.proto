@@ -7,4 +7,5 @@ option go_package = "./protos";
 
 message DbSize {
     int64 size = 1;
+    uint64 unix_epoch = 2;
 }
