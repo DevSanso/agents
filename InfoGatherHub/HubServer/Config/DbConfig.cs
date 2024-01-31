@@ -1,6 +1,6 @@
-namespace InfoGatherHub.HubServer;
+namespace InfoGatherHub.HubServer.Config;
 
-record OdbcConfig
+public record DbConfig
 {
     public string Ip = "";
     public int Port = 0;
@@ -9,8 +9,4 @@ record OdbcConfig
     public string Dbname = "";
     public string Driver = "";
     public int MaxConn = 0;
-}
-record Config
-{
-    public OdbcConfig odbcConfig = new OdbcConfig();
 }

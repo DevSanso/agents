@@ -1,20 +1,22 @@
 namespace InfoGatherHub.HubServer.Mapping;
 
-using Google.Protobuf;
-
 using InfoGatherHub.HubProtos.Agent;
-using InfoGatherHub.HubProtos.Agent.Os;
+
+using ps_redis = InfoGatherHub.HubProtos.Agent.Redis;
+
 using InfoGatherHub.HubServer.Mapping.Agent;
 
 public class AgentMapping : IMapping<SnapData>
 {
-    AgentOsMapping osMapping = new AgentOsMapping();
+    private readonly AgentRedisMapping redisMapping = new();
     public void Run(SnapData snap)
     {
         switch(snap.Format)
         {
             case SnapFormat.Os:
-                osMapping.Run(AgentOsSnap.Parser.ParseFrom(snap.RawSnap));
+            break;
+            case SnapFormat.Redis:
+                redisMapping.Run(ps_redis::AgentRedisSnap.Parser.ParseFrom(snap.RawSnap));
             break;
         }
     }

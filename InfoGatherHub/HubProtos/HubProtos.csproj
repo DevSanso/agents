@@ -15,10 +15,15 @@
 
     <Protobuf Include="..\..\protobuf\agent\os\os_snap.proto" GrpcServices="None" Link="protobuf\agent\os\os_snap.proto"/>
     <Protobuf Include="..\..\protobuf\agent\os\net.proto" GrpcServices="None" Link="protobuf\agent\os\net.proto"/>
-
     <Protobuf Include="..\..\protobuf\agent\snap.proto" GrpcServices="None" Link="protobuf\agent\snap.proto"/>
+
+    <Protobuf Include="..\..\protobuf\agent\redis\redis_snap.proto" GrpcServices="None" Link="protobuf\agent\redis\redis_snap.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\redis\db_size.proto" GrpcServices="None" Link="protobuf\agent\redis\db_size.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\redis\info_cpu.proto" GrpcServices="None" Link="protobuf\agent\redis\info_cpu.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\redis\info_memory.proto" GrpcServices="None" Link="protobuf\agent\redis\redis_snap.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\redis\info_stat.proto" GrpcServices="None" Link="protobuf\agent\redis\info_stat.proto"/>
+    <Protobuf Include="..\..\protobuf\agent\redis\client_list.proto" GrpcServices="None" Link="protobuf\agent\redis\client_list.proto "/>
+
   </ItemGroup>
-
-
 
 </Project>
