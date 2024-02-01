@@ -3,7 +3,7 @@ namespace InfoGatherHub.HubCommon.Pool;
 using System.Collections.Concurrent;
 
 
-public class Pool<T> where T : class
+public class Pool<T> where T : class, IDisposable
 {
     private readonly long maxSize;
     private long allocSize;
@@ -21,30 +21,27 @@ public class Pool<T> where T : class
     {
         if(!CheckSize()) 
             throw new IndexOutOfRangeException("Pool Alloc Size is Max");
-        
-        T? obj = null;
-        bool deqRet = q.TryDequeue(out obj);
 
-        if (obj == null)
-        {
-            obj = genFunc();
-        }
+        bool deqRet = q.TryDequeue(out T? obj);
+
+        obj ??= genFunc();
         Interlocked.Increment(ref allocSize);
         return obj;
     }
     public R Run<T2,R>(Func<T,T2,R> func, T2 args) where R : class?
     {
         R ret;
-        T obj;
+        T? obj = null;
         try
         {   
             obj = GetObject();
             ret = func(obj, args);
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
+            obj?.Dispose();
             Interlocked.Decrement(ref allocSize);
-            throw e;
+            throw;
         }
         q.Enqueue(obj);
         return ret;

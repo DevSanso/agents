@@ -15,7 +15,7 @@ using InfoGatherHub.HubServer.Global.Extend;
 
 string configPath = args[1];
 
-var g = GlobalProvider<Config, GlobalExtend>.Init(new GlobalExtend());
+var g = GlobalProvider<Config, GlobalExtend>.Init();
 
 g.LoadToml(configPath);
 

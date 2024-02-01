@@ -5,25 +5,29 @@ using InfoGatherHub.HubGlobal.Logger;
 
 public class Global<T, T2> : IConfigLoader<T>, ILogger   
 {
-    public T2? Extend  {get; private set;}
-    protected Global(T2? extend)
+    public T2? Extend  {get; protected set;}
+    protected Global()
     {
-        this.Extend = extend;
     }
+
 }
 
-public class GlobalProvider<T, T2> : Global<T, T2> where T2 : class
+public class GlobalProvider<T, T2> : Global<T, T2> where T2 : IGlobalExtend<T>, new()
 {
-    private GlobalProvider(T2? extend) : base(extend)
+    private GlobalProvider() : base()
     {
     }
     static Global<T, T2>? instance = null;
-    public static Global<T, T2> Init(T2 ?extend)
+    public static Global<T, T2> Init()
     {
         if(instance != null)
             throw new Exception("already init global");
 
-        instance = new GlobalProvider<T,T2>(extend);
+        var tmp = new GlobalProvider<T, T2>();
+        var e = new T2();
+        e.Init(tmp);
+        tmp.Extend = e;
+        instance = tmp;
         return instance;
     }
     public static Global<T,T2> Global()
