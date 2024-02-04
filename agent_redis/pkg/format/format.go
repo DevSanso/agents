@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 )
 
-func MakeFormat(seq uint64, data []byte) ([]byte, error) {
+func MakeFormat(seq uint64, id string, data []byte) ([]byte, error) {
 	temp := &bytes.Buffer{}
 	buf := bufio.NewWriter(temp)
 
@@ -22,6 +22,8 @@ func MakeFormat(seq uint64, data []byte) ([]byte, error) {
 	}
 	buf.WriteByte(':')
 	buf.WriteString("REDIS")
+	buf.WriteByte(':')
+	buf.Write(([]byte(id))[:8])
 	buf.WriteByte(':')
 	buf.Write(data)
 

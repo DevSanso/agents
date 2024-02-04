@@ -8,24 +8,26 @@ using Google.Protobuf;
 using InfoGatherHub.HubCommon.Format;
 using InfoGatherHub.HubCommon.Compress;
 using InfoGatherHub.HubProtos.Agent;
+using InfoGatherHub.HubSender.Worker.Format;
 
 public class SendDataWorker : IWorker
 {
     TcpClient client;
-    ConcurrentQueue<IFormat<Void>> recvice;
-    public SendDataWorker(TcpClient tcpClient, ConcurrentQueue<IFormat<Void>> recvice)
+    ConcurrentQueue<IFormat<WorkerFormatHeader>> recvice;
+    public SendDataWorker(TcpClient tcpClient, ConcurrentQueue<IFormat<WorkerFormatHeader>> recvice)
     {
         client = tcpClient;
         this.recvice = recvice;
     }
     public void Work()
     {
-        IFormat<Void>? output;
+        IFormat<WorkerFormatHeader>? output;
         if(recvice.TryDequeue(out output) == false)return;
 
         using(var stream = client.GetStream())
         {
-            string objectName = output.ObjectName();
+            string objectName = output.Header().ObjectName;
+            string id = output.Header().Id;
 
             if(objectName == "OS")
             {
@@ -46,6 +48,7 @@ public class SendDataWorker : IWorker
                 SnapData snapData = new SnapData()
                 {
                     RawSnap = ByteString.CopyFrom(output.Data()),
+                    Id = id,
                     Format = SnapFormat.Redis
                 };
 

@@ -12,6 +12,7 @@ import (
 	"agent_redis/pkg/worker"
 	"agent_redis/pkg/protos"
 	"agent_redis/pkg/format"
+	"agent_redis/pkg/global/g_var"
 )
 
 type MiddleWareWorker struct {
@@ -50,14 +51,14 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 	formatSeq := atomic.AddUint64(&t.seq, 1)
 	if formatSeq >= math.MaxUint64 {atomic.StoreUint64(&t.seq, 0)}
 	
-	output, outputErr := format.MakeFormat(formatSeq, redisSnapBytes)
+	output, outputErr := format.MakeFormat(formatSeq, g_var.GetID(), redisSnapBytes)
 
 	if outputErr != nil{
 		return nil, outputErr
 	}
 
 	return &worker.WorkerResponse{
-		DType: int(protos.SnapFormat_Redis),
+		DType: int(-1),
 		Data: output,
 	}, nil
 }

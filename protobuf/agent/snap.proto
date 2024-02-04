@@ -12,5 +12,6 @@ enum SnapFormat {
 
 message SnapData {
     SnapFormat format = 1;
-    bytes raw_snap = 2;
+    string id = 2;
+    bytes raw_snap = 3;
 }

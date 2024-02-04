@@ -53,8 +53,8 @@ func (mmfi *memMapFileImpl)Write(b []byte) (n int, err error) {
 		return
 	}
 	defer mmfi.blockingFileUnLock()
-
-	n = copy(mmfi.ptr, b)
+	n += copy(mmfi.ptr[9:],b[9:])
+	n += copy(mmfi.ptr[:8], b[:8])
 	return
 }
 

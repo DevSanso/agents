@@ -3,5 +3,5 @@ namespace InfoGatherHub.HubServer.Mapping;
 
 public interface IMapping<T>
 {
-    void Run(T data);
+    void Run(string id, T data);
 }

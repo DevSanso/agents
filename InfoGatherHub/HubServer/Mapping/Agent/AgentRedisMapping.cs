@@ -7,14 +7,14 @@ using InfoGatherHub.HubServer.Collection;
 public class AgentRedisMapping : IMapping<AgentRedisSnap>
 {
     readonly RedisCollection collection = new();
-    public void Run(AgentRedisSnap snaps)
+    public void Run(string id, AgentRedisSnap snaps)
     {
         foreach(var snap in snaps.Datas)
         {
             switch(snap.Format)
             {
                 case DataFormat.ClientLists:
-                collection.ClientList(RedisClientList.Parser.ParseFrom(snap.RawData));
+                collection.ClientList(id, RedisClientList.Parser.ParseFrom(snap.RawData));
                 break;
                 case DataFormat.Dbsize:
                 DbSize.Parser.ParseFrom(snap.RawData);

@@ -9,14 +9,14 @@ using InfoGatherHub.HubServer.Mapping.Agent;
 public class AgentMapping : IMapping<SnapData>
 {
     private readonly AgentRedisMapping redisMapping = new();
-    public void Run(SnapData snap)
+    public void Run(string id, SnapData snap)
     {
         switch(snap.Format)
         {
             case SnapFormat.Os:
             break;
             case SnapFormat.Redis:
-                redisMapping.Run(ps_redis::AgentRedisSnap.Parser.ParseFrom(snap.RawSnap));
+                redisMapping.Run(snap.Id, ps_redis::AgentRedisSnap.Parser.ParseFrom(snap.RawSnap));
             break;
         }
     }

@@ -7,4 +7,5 @@ type RedisConfig struct {
 	Ip string
 	Port int
 	Timeout int
+	DbVersion float32
 }

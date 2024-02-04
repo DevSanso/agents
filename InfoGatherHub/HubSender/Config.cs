@@ -5,6 +5,8 @@ record MMapSnapIpcConfig
     public bool isUsed = false;
     public string path = "";
     public int size = 0;
+    public string physicsIp = "";
+    public string virtualIp = "";
 }
 
 record TcpSnapIpcConfig

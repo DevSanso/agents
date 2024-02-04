@@ -14,6 +14,7 @@ using InfoGatherHub.HubCommon.Display;
 using InfoGatherHub.HubGlobal.Config;
 using InfoGatherHub.HubSender.Worker;
 using InfoGatherHub.HubGlobal.Logger;
+using InfoGatherHub.HubSender.Worker.Format;
 
 
 string configPath = args[1];
@@ -21,7 +22,7 @@ string configPath = args[1];
 List<IWorker> snapWorkers = new List<IWorker>();
 List<Timer> snapTimers = new List<Timer>();
 
-var g = GlobalProvider<Config,object>.Init(null);
+var g = GlobalProvider<Config>.Init();
 
 g.LoadToml(configPath);
 
@@ -29,7 +30,7 @@ g.InitLogLine(new DisplayConsole());
 
 var config = g.GetConfig()!;
 
-ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>> q = new ConcurrentQueue<IFormat<InfoGatherHub.HubCommon.Format.Void>>();
+ConcurrentQueue<IFormat<WorkerFormatHeader>> q = new ConcurrentQueue<IFormat<WorkerFormatHeader>>();
 
 if(config.osSnapSetting != null) {
     IWorker osSnapWorker = new ReadOsSnapWorker(new MemMapClient(config.osSnapSetting.path, config.osSnapSetting.size), q);

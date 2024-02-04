@@ -6,11 +6,15 @@ import (
 
 	"agent_redis/pkg/config"
 	"agent_redis/pkg/global/log"
+	g_db "agent_redis/pkg/global/db"
+	"agent_redis/pkg/global/g_var"
+	"agent_redis/pkg/db"
 	"agent_redis/pkg/worker"
 )
 
 func main() {
 	configPath := os.Args[1]
+	agent_id := os.Args[2]
 	cfg, err := config.ReadConfigFromFile(configPath)
 	if err != nil {
 		panic(err)
@@ -19,6 +23,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	err = g_db.InitRedis(&db.ClientOptions{
+		Timeout: 1,
+		Ip : cfg.Redis.Ip,
+		Port: cfg.Redis.Port,
+		Username: cfg.Redis.UserName,
+		Password: cfg.Redis.Password,
+		Db: cfg.Redis.Dbname,
+		DbVersion: cfg.Redis.DbVersion,
+	})
+	if err != nil {
+		log.GetLogger().Error(err.Error())
+		os.Exit(2)
+	}
+	g_var.InitGlobalVar(agent_id)
 
 	var cfgFuncCaller func() (string,int,error) = nil
 	if cfg.Sender.SendType == "TCP" {

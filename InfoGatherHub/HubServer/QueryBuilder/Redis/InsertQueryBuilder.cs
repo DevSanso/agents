@@ -7,16 +7,27 @@ using ps_redis = InfoGatherHub.HubProtos.Agent.Redis;
 
 public class InsertQueryBuilder
 {
-    public string ClientListQuery(ps_redis::RedisClientList list)
+    public string ClientListQuery(string id, ps_redis::RedisClientList list)
     {
-        Query queryBuilder = new Query("client_info");
+        Query queryBuilder = new ("client_info");
         foreach(var client in list.Clients)
         {
-            queryBuilder.AsInsert(new {
-                collect_time = list.UnixEpoch
+            queryBuilder.AsInsert(new 
+            {
+                object_id = id,
+                collect_time = list.UnixEpoch,
+                id = client.ID,
+                addr = client.Addr,
+                local_addr = client.LocalAddr,
+                fd = client.FD,
+                name = client.Name,
+                age = client.Age,
+                idle = client.Idle,
+
+
             });
         }
-        var compiler = new SqlKata.Compilers.PostgresCompiler();
+        var compiler = new PostgresCompiler();
         var ret = compiler.Compile(queryBuilder);
 
         return ret.Sql;        
