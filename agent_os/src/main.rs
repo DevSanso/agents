@@ -33,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut ipc_listener =
         ipc::new_listener(ipc::ListenerKind::Mmap(config.ipc_path, config.ipc_size))?;
 
-    let tp = pool::thraed_pool::ThreadPool::new(200);
+    let tp = pool::ThreadPool::new(30,200);
 
     let buf = buffer::DoubleBuffer::<protos::os_snap::Data>::new();
 
@@ -56,13 +56,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 let buf_clone = Arc::clone(&buf);
                 let fun = task::ipc_send_task_gen(ipc_listener.get_stream()?, buf_clone);
 
-                tp_g.use_item((), fun)?;
+                tp_g.run_func((), fun)?;
             }
             
             if utils::util_time::is_interval(now, time::Duration::from_secs(OS_DETAILS_NET_INTERVAL)) {
                 let buf_clone = Arc::clone(&buf);
                 let fun = task::os_details_net_stat_thread_gen(buf_clone);
-                tp_g.use_item((), fun)?;
+                tp_g.run_func((), fun)?;
             }
         }
     }

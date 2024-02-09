@@ -1,9 +1,10 @@
-pub mod thraed_pool;
-
+pub mod thread_pool;
 use std::io;
 
 pub trait Pool<T : Send + Sync,R,E> {
-    fn use_item<F : 'static + FnOnce(T) -> Result<(),String> + Send >(&mut self, object : T,  f : F) -> io::Result<()>;
+    fn run_func<F : FnOnce(T) -> Result<R,E> + Send + 'static>(&mut self, arg : T, f : F) -> io::Result<()>;
     fn used_count(&self) -> usize;
     fn full_count(&self) -> usize;
 }
+
+pub use thread_pool::ThreadPool;
