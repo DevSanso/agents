@@ -13,6 +13,8 @@ using InfoGatherHub.HubGlobal.Config;
 using InfoGatherHub.HubCommon.Display;
 using InfoGatherHub.HubServer.Config;
 using InfoGatherHub.HubServer.Global.Extend;
+using InfoGatherHub.HubServer.Server;
+using InfoGatherHub.HubServer;
 
 string configPath = args[1];
 
@@ -24,3 +26,8 @@ g.LoadToml(configPath);
 g.InitLogLine(new DisplayConsole());
 
 var config = g.GetConfig();
+
+var server = new TcpSocketServer(config!.ServerConfig.ServerAddress, config!.ServerConfig.Port);
+
+var mainThread = new MainThread(server);
+mainThread.Start();

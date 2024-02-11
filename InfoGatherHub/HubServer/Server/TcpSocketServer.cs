@@ -9,9 +9,9 @@ public class TcpSocketServer
 {
     private TcpListener listener;
 
-    public TcpSocketServer(int port)
+    public TcpSocketServer(string address, int port)
     {
-        listener = new TcpListener(IPAddress.Any, port);
+        listener = new TcpListener(IPAddress.Parse(address), port);
         listener.Start();
     }
     private bool IsTimeOutException(Exception e)
