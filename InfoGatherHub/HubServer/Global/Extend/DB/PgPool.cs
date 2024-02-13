@@ -3,10 +3,6 @@ namespace InfoGatherHub.HubServer.Global.Extend.DB;
 using Npgsql;
 
 using InfoGatherHub.HubCommon.Pool;
-using InfoGatherHub.HubServer.Config;
-using InfoGatherHub.HubGlobal;
-using InfoGatherHub.HubGlobal.Config;
-using System.Data;
 using System.Data.Common;
 
 public class PgPool : Pool<NpgsqlConnection>
@@ -43,7 +39,9 @@ public class PgPool : Pool<NpgsqlConnection>
     {
         DbDataReader? reader = base.Run<string,DbDataReader?>(QueryImpl, query);
         T ret = readFunc(reader);
-        reader!.DisposeAsync();
+        Task disposeTask = reader!.DisposeAsync().AsTask();
+        disposeTask.Wait();
+        disposeTask.Dispose();
         return ret;
     }
 }
