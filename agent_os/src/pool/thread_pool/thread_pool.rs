@@ -2,7 +2,7 @@ use std::io;
 use std::sync::{Mutex, Arc};
 
 use crate::pool;
-use crate::pool::thread_pool::thread_impl::{ThreadImpl,ThreadState};
+use crate::pool::thread_pool::thread_impl::{ThreadImpl,ThreadSignal};
 
 #[derive(Debug)]
 pub struct ThreadPool {
@@ -24,8 +24,8 @@ impl ThreadPool {
     fn find_idle(&self) -> Option<usize> {
 
         for i in 0..self.thread_p.len() {
-            let state = self.thread_p[i].get_state();
-            if state == ThreadState::Idle {
+            let state = self.thread_p[i].get_signal();
+            if state == ThreadSignal::Idle {
                 return Some(i);
             }
         }
@@ -79,8 +79,8 @@ impl pool::Pool<(), () , String> for ThreadPool {
         let mut count = 0;
         
         for i in 0..self.thread_p.len() {
-            let state = self.thread_p[i].get_state();
-            if state == ThreadState::Running {
+            let state = self.thread_p[i].get_signal();
+            if state == ThreadSignal::Running {
                 count += 1;
             }
         }
