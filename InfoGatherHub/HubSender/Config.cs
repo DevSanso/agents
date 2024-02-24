@@ -21,7 +21,7 @@ record LogSetting
     public string? logPath = null;
 }
 
-record HubServerSetting
+record PusherSetting
 {
     public string ip = "";
     public int port = 0;
@@ -30,8 +30,8 @@ record HubServerSetting
 record Config
 {
     public LogSetting logSetting = new LogSetting();
+    public PusherSetting PusherSetting = new PusherSetting();
     public MMapSnapIpcConfig? osSnapSetting = new MMapSnapIpcConfig();
     public MMapSnapIpcConfig? redisSnapSetting = new MMapSnapIpcConfig();
     //public TcpSnapIpcConfig? tcpSnapServerSetting = new TcpSnapIpcConfig();
-    public HubServerSetting hubServerSetting = new HubServerSetting();
 }
