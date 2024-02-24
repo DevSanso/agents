@@ -3,6 +3,7 @@ package worker
 import (
 	"time"
 	"context"
+	"fmt"
 
 	"agent_redis/pkg/global/log"
 )
@@ -66,6 +67,7 @@ func (wm *WorkerManager)getNotRunWorkerIndex(idxs []int, output []int) {
 		ele := wm.commandWorkers[i]
 
 		if ele.ctx == nil {
+			log.GetLogger().Debug(fmt.Sprintf("getNotRunWorkerIndex is not running, name[%s] outputIdx[%d]", ele.w.GetName(), outputIdx))
 			output[outputIdx] = i
 			outputIdx += 1
 			continue
@@ -73,6 +75,7 @@ func (wm *WorkerManager)getNotRunWorkerIndex(idxs []int, output []int) {
 
 		select {
 		case <- ele.ctx.Done():
+			log.GetLogger().Debug(fmt.Sprintf("getNotRunWorkerIndex is done, name[%s] outputIdx[%d]", ele.w.GetName(), outputIdx))
 			output[outputIdx] = i
 			outputIdx += 1
 		default:
@@ -85,12 +88,12 @@ func (wm *WorkerManager)getIntervalWorkersIndex(output []int) {
 		if time.Now().UnixMilli() % ele.interval.Milliseconds()  <= 100 {
 			output[outputIdx] = i
 			outputIdx += 1
+
+			log.GetLogger().Debug("getIntervalWorkersIndex is interval on, name[" + ele.w.GetName() + "]")
 		}
 	}
 }
-func runCmdWorker(cmd *cmdWorkerInfo, recv chan <- *WorkerResponse) {
-	var cancel context.CancelFunc
-	cmd.ctx, cancel = context.WithCancel(context.Background())
+func runCmdWorker(cmd *cmdWorkerInfo, cancel func(), recv chan <- *WorkerResponse) {
 	defer cancel()
 
 	by,err := cmd.w.Work()
@@ -112,7 +115,10 @@ func(wm *WorkerManager)cmdWorkerLoop() {
 		for _,idx := range willRunWokers {
 			work := wm.commandWorkers[idx]
 			var recv chan <- *WorkerResponse = wm.middleChannel
-			go runCmdWorker(&work, recv)
+			log.GetLogger().Info("cmdWorkerLoop Running Thread name[" + work.w.GetName() + "]")
+			ctx, cancel := context.WithCancel(context.Background())
+			work.ctx = ctx
+			go runCmdWorker(&work, cancel, recv)
 		}
 		
 		intervalWorkers = nil

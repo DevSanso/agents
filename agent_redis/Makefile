@@ -10,9 +10,13 @@ protobuf:
 	@protoc -I ../protobuf/agent/redis --go_out=./pkg redis_snap.proto
 
 build:
-	@go -o ./dist/dist/agent_redis ./cmd/execute/*
+	@go build -o ../dist/bin/agent_redis ./cmd/execute/*
+
+move_assets:
+	@cp -r ./assets/* ../dist/
 
 test:
 	@go test -v ./pkg/db/
 
-all: protobuf build
+all: protobuf build move_assets
+	@echo "Build complete"

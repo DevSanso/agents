@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"path/filepath"
 )
 
 var (
@@ -17,7 +18,8 @@ type SenderConfig struct {
 func (sc *SenderConfig)MmapConfig() (filename string, size int, err error){
 	if sc.SendType == "MMAP" {
 		filename = sc.SendConfig["filename"].(string)
-		size = sc.SendConfig["size"].(int)
+		filename,_ = filepath.Abs(filename)
+		size = int(sc.SendConfig["size"].(int64))
 		return
 	}
 	err = ErrNotMatchSendType

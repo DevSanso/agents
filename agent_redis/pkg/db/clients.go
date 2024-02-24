@@ -1,12 +1,14 @@
 package db
 
 import (
-	"agent_redis/pkg/protos"
 	"context"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"agent_redis/pkg/protos"
+	"agent_redis/pkg/global/log"
 )
 
 func parseRedisClientInfo(input string) (*protos.RedisClientInfo, error) {
@@ -108,6 +110,7 @@ func convertStringListToRedisClientInfoList(input []string) (*protos.RedisClient
 func (rcc *redisClientCommander) GetClientList(ctx context.Context) (*protos.RedisClientList, error) {
 	cmd := rcc.client.Do(ctx, "client", "list")
 	if cmd.Err() != nil {
+		log.GetLogger().Debug(cmd.Err().Error())
 		return nil,cmd.Err()
 	}
 

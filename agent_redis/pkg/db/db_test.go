@@ -1,28 +1,30 @@
 package db_test
 
 import (
-	"encoding/json"
-	"os"
 	"testing"
 	"context"
 
 	"agent_redis/pkg/db"
+	"agent_redis/pkg/config"
 )
 
 var commander db.IRedisCoreClientCommander
 
 func init() {
-	bytes, err := os.ReadFile("../../config/test/redis.json")
+	cfg, err := config.ReadConfigFromFile("../../assets/config/agent_redis.toml")
 	if err != nil {
 		panic(err)
 	}
-	opts := &db.ClientOptions{}
-
-	err = json.Unmarshal(bytes, opts)
-	if err != nil {
-		panic(err)
-	}
-	commander = db.NewCoreClient(opts)
+	commander = db.NewCoreClient(&db.ClientOptions{
+		Timeout: 1,
+		Ip : cfg.Redis.Ip,
+		Port: cfg.Redis.Port,
+		Username: cfg.Redis.UserName,
+		Password: cfg.Redis.Password,
+		Db: cfg.Redis.Dbname,
+		DbVersion: cfg.Redis.DbVersion,
+	})
+	
 }
 
 func TestRedisClientList(t *testing.T) {

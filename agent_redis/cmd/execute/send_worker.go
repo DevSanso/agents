@@ -29,7 +29,9 @@ func NewTcpSendWorker(ip string, port int) (*TcpSendWorker, error) {
 func (t *TcpSendWorker)Close() error {
 	return t.client.Close()
 }
-
+func (w *TcpSendWorker)GetName() string {
+	return "TcpSendWorker"
+}
 func (t *TcpSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
 	data, ok := args[0].([]byte)
 	if !ok {
@@ -55,7 +57,9 @@ func NewMmapSendWorker(filename string, size int) (*MmapSendWorker, error) {
 		client: c,
 	}, nil
 }
-
+func (w *MmapSendWorker)GetName() string {
+	return "MmapSendWorker"
+}
 func (t *MmapSendWorker)Close() error {
 	return t.client.Close()
 }

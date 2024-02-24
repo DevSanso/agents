@@ -1,0 +1,16 @@
+[Config]
+LogFilePath = "../log/redis.log"
+LogLevel = "DEBUG"
+
+[Config.Redis]
+Dbname = 0
+UserName = "test"
+Password = "test"
+Ip = "172.17.0.2"
+Port = 6379
+Timeout = 30
+DbVersion = 3.2
+
+[Config.Sender]
+SendType = "MMAP"
+SendConfig = { filename = "../tmp/redis.mmap", size = 512000 }

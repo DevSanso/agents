@@ -13,15 +13,21 @@ import (
 )
 
 func main() {
+
+	if(len(os.Args) < 3) {
+		panic("Usage: ./execute configPath agent_id")
+		return;
+	}
+
 	configPath := os.Args[1]
 	agent_id := os.Args[2]
 	cfg, err := config.ReadConfigFromFile(configPath)
 	if err != nil {
-		panic(err)
+		panic("ReadConfig File Erorr : " + err.Error())
 	}
-	err = log.InitLogger(cfg.LogFilePath)
+	err = log.InitLogger(cfg.LogFilePath, log.LogLevel(cfg.LogLevel))
 	if err != nil {
-		panic(err)
+		panic("Init Logger Error : " + err.Error())
 	}
 	err = g_db.InitRedis(&db.ClientOptions{
 		Timeout: 1,
@@ -47,7 +53,7 @@ func main() {
 
 	strval,intval, cfgErr := cfgFuncCaller()
 	if cfgErr != nil {
-		log.GetLogger().Error(cfgErr.Error())
+		log.GetLogger().Error(cfgErr.Error() + " Type(" + cfg.Sender.SendType+")")
 		os.Exit(2)
 	}
 

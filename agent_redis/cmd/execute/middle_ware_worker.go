@@ -9,6 +9,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
+	"agent_redis/pkg/global/log"
 	"agent_redis/pkg/worker"
 	"agent_redis/pkg/protos"
 	"agent_redis/pkg/format"
@@ -62,13 +63,17 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 		Data: output,
 	}, nil
 }
+func (w *MiddleWareWorker)GetName() string {
+	return "MiddleWareWorker"
+}
 func (t *MiddleWareWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
 	var ret *worker.WorkerResponse = nil
 	var retErr error = nil
 	
-	if args != nil {
+	if args[0] != nil {
 		res, ok := args[0].(*worker.WorkerResponse)
 		if !ok {
+			log.GetLogger().Debug("MiddleWareWorker:Work:args[0] is not *worker.WorkerResponse")
 			return nil, os.ErrInvalid
 		}
 		t.mutex.Lock()

@@ -7,6 +7,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	"agent_redis/pkg/global/log"
 )
 
 type IMemMapFile interface {
@@ -24,10 +25,12 @@ func (mmfi *memMapFileImpl)tryFileLock() (err error) {
 	for cnt := 0 ; cnt < 2; cnt ++ {
 		err = syscall.Flock(int(mmfi.fd), syscall.LOCK_EX | syscall.LOCK_NB)
 		if err == nil {
+			log.GetLogger().Debug(err.Error())
 			break
 		}
 
 		if !syscall.ENOLCK.Is(err) || !syscall.EWOULDBLOCK.Is(err) {
+			log.GetLogger().Debug(err.Error())
 			break
 		}
 
@@ -71,7 +74,7 @@ func (mmfi *memMapFileImpl)Close() error {
 }
 
 func MemMapFileOpen(filename string, size int64) (IMemMapFile, error) {
-	f,openErr := os.Open(filename)
+	f,openErr := os.OpenFile(filename, os.O_CREATE | os.O_RDWR, 0766)
 	if openErr != nil {
 		return nil, openErr
 	}
@@ -79,11 +82,13 @@ func MemMapFileOpen(filename string, size int64) (IMemMapFile, error) {
 
 	resizeErr := f.Truncate(size)
 	if resizeErr != nil {
+		log.GetLogger().Debug(resizeErr.Error())
 		return nil, resizeErr
 	}
 	fd := f.Fd()
 	data, mmapErr := syscall.Mmap(int(fd), 0, int(size), syscall.PROT_WRITE, syscall.MAP_SHARED);
 	if mmapErr != nil {
+		log.GetLogger().Debug(mmapErr.Error())
 		return nil, mmapErr
 	}
 	ret := &memMapFileImpl{

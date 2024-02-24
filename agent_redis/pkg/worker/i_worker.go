@@ -7,4 +7,5 @@ type WorkerResponse struct{
 
 type IWorker interface{
 	Work(args ...interface{}) (*WorkerResponse, error)
+	GetName() string
 }
