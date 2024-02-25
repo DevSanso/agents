@@ -2,16 +2,12 @@ package worker
 
 import (
 	"time"
-	"context"
 	"fmt"
 
 	"agent_redis/pkg/global/log"
 )
-type cmdWorkerInfo struct {
-	w IWorker
-	interval time.Duration
-	ctx context.Context
-}
+
+
 type WorkerManager struct {
 	senderWorker IWorker
 	middleWareWorker IWorker
@@ -19,7 +15,7 @@ type WorkerManager struct {
 	middleChannel chan *WorkerResponse
 	sendChannel chan *WorkerResponse
 
-	commandWorkers []cmdWorkerInfo
+	commandWorkers []*cmdWorkerInfo
 }
 type WorkerManagerBuilder struct {
 	wm *WorkerManager
@@ -27,13 +23,14 @@ type WorkerManagerBuilder struct {
 
 func NewWorkerManagerBuilder() *WorkerManagerBuilder {
 	b := &WorkerManagerBuilder{wm : new(WorkerManager)}
-	b.wm.commandWorkers = make([]cmdWorkerInfo, 0)
+	b.wm.commandWorkers = make([]*cmdWorkerInfo, 0)
 
 	return b
 }
 
 func (b *WorkerManagerBuilder)AddCmdWorker(cmdWorker  IWorker, interval time.Duration) *WorkerManagerBuilder {
-	b.wm.commandWorkers = append(b.wm.commandWorkers, cmdWorkerInfo{cmdWorker, interval, nil})
+	obj := newCmdWorkerInfo(cmdWorker, interval)
+	b.wm.commandWorkers = append(b.wm.commandWorkers, obj)
 	return b
 }
 
@@ -61,68 +58,31 @@ func (wm *WorkerManager)StartAndBlock() {
 	wm.mainLoop()
 }
 
-func (wm *WorkerManager)getNotRunWorkerIndex(idxs []int, output []int) {
-	outputIdx := 0
-	for _,i := range idxs{
-		ele := wm.commandWorkers[i]
-
-		if ele.ctx == nil {
-			log.GetLogger().Debug(fmt.Sprintf("getNotRunWorkerIndex is not running, name[%s] outputIdx[%d]", ele.w.GetName(), outputIdx))
-			output[outputIdx] = i
-			outputIdx += 1
-			continue
-		}
-
-		select {
-		case <- ele.ctx.Done():
-			log.GetLogger().Debug(fmt.Sprintf("getNotRunWorkerIndex is done, name[%s] outputIdx[%d]", ele.w.GetName(), outputIdx))
-			output[outputIdx] = i
-			outputIdx += 1
-		default:
-		}
-	}
-}
-func (wm *WorkerManager)getIntervalWorkersIndex(output []int) {
+func (wm *WorkerManager)getNeedRunWorkersIndex(output []int) {
 	outputIdx := 0
 	for i,ele := range wm.commandWorkers {
-		if time.Now().UnixMilli() % ele.interval.Milliseconds()  <= 100 {
+		if  ele.isRunNow() {
+			log.GetLogger().Debug(fmt.Sprintf("this worker is run now %s", ele.w.GetName()))
 			output[outputIdx] = i
 			outputIdx += 1
-
-			log.GetLogger().Debug("getIntervalWorkersIndex is interval on, name[" + ele.w.GetName() + "]")
 		}
 	}
-}
-func runCmdWorker(cmd *cmdWorkerInfo, cancel func(), recv chan <- *WorkerResponse) {
-	defer cancel()
-
-	by,err := cmd.w.Work()
-	if err != nil {
-		log.GetLogger().Error(err.Error())
-		return
-	}
-	recv <- by
 }
 
 func(wm *WorkerManager)cmdWorkerLoop() {
 	for {
 		intervalWorkers := make([]int, len(wm.commandWorkers))
-		willRunWokers := make([]int, len(wm.commandWorkers))
 
-		wm.getIntervalWorkersIndex(intervalWorkers)
-		wm.getNotRunWorkerIndex(intervalWorkers, willRunWokers)
+		wm.getNeedRunWorkersIndex(intervalWorkers)
 
-		for _,idx := range willRunWokers {
+		for _,idx := range intervalWorkers {
 			work := wm.commandWorkers[idx]
 			var recv chan <- *WorkerResponse = wm.middleChannel
-			log.GetLogger().Info("cmdWorkerLoop Running Thread name[" + work.w.GetName() + "]")
-			ctx, cancel := context.WithCancel(context.Background())
-			work.ctx = ctx
-			go runCmdWorker(&work, cancel, recv)
+			work.runCmdWorker(recv)
 		}
 		
 		intervalWorkers = nil
-		willRunWokers = nil
+		time.Sleep(time.Millisecond * 500)
 	}
 }
 
@@ -147,7 +107,7 @@ func (wm *WorkerManager)middleWorkerLoop() {
 
 		res = nil
 		err = nil
-		time.Sleep(time.Microsecond * 5)
+		time.Sleep(time.Millisecond * 1)
 	}
 }
 
@@ -157,7 +117,7 @@ func (wm *WorkerManager)sendWorkerLoop() {
 		if err != nil {
 			log.GetLogger().Error(err.Error())
 		}
-		time.Sleep(time.Microsecond * 10)
+		time.Sleep(time.Microsecond * 500)
 	}
 }
 

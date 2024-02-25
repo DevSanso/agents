@@ -67,9 +67,14 @@ func InitLogger(filePath string, level LogLevel) (err error) {
 		}
 		cfg.Level,err = convertLevel(level)
 		if err != nil {
-			return
+			return	
 		}
 		cfg.DisableStacktrace = true
+		
+		if cfg.Level.Level() >= zap.ErrorLevel {
+			cfg.DisableCaller = true
+		}
+		cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 		logger, err = cfg.Build()
 	})
 	return

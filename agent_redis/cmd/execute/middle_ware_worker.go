@@ -81,10 +81,12 @@ func (t *MiddleWareWorker)Work(args ...interface{}) (*worker.WorkerResponse, err
 		t.mutex.Unlock()
 	}
 
-	if time.Now().UnixMilli() % (int64(time.Second) * 4)  < 100 {
+	if (time.Now().UnixMilli() % (int64(time.Millisecond) * 4000) / 1000000) <= 100 {
 		t.mutex.Lock()
 		ret, retErr = t.makeSendData()
+		log.GetLogger().Debug("MiddleWareWorker:Work: make send data");
 		t.mutex.Unlock()
 	}
+	time.Sleep(time.Millisecond * 100)
 	return ret, retErr
 }
