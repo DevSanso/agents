@@ -9,6 +9,7 @@ import (
 	g_db "agent_redis/pkg/global/db"
 	"agent_redis/pkg/db"
 	"agent_redis/pkg/worker"
+	"agent_redis/cmd/execute/workers"
 )
 
 func initLogger(cfg *config.Config) {
@@ -37,27 +38,40 @@ func initAgentDbClient(cfg *config.Config) {
 	}
 }
 
-func initWorkerManagerBuilder(cfg *config.Config, builder *worker.WorkerManagerBuilder) {
-	strval,intval, cfgErr := cfg.Sender.MmapConfig()
-	if cfgErr != nil {
-		log.GetLogger().Error(cfgErr.Error() + " Type(" + cfg.Sender.SendType+")")
-		os.Exit(2)
+func initWorkers(cfg *config.Config) ([]*worker.WorkerThreadCtl, error) {
+	filename, size, err := cfg.Sender.MmapConfig()
+	if err != nil {
+		return nil, err
 	}
-
-	var sendWorker worker.IWorker = nil
-	var sendWorkerErr error = nil
-
-	sendWorker,sendWorkerErr = NewMmapSendWorker(strval, intval)
-
-	if sendWorkerErr != nil {
-		log.GetLogger().Error(sendWorkerErr.Error())
-		os.Exit(2)
-	}
+	mmapWorker,mmapErr := workers.NewMmapSendWorker(filename, size)
+	if mmapErr != nil {
+		return nil, mmapErr
 	
-	middleWareWorker := NewMiddleWareWorker()
-	clientInfoCmdWorker := NewClientInfoWorker()
+	}
 
-	builder.SendWorker(sendWorker)
-	builder.MiddleWareWorker(middleWareWorker)
-	builder.AddCmdWorker(clientInfoCmdWorker, time.Second * 3)
+	miidleChannel := make(chan *worker.WorkerResponse)
+	sendChannel := make(chan *worker.WorkerResponse)
+
+	ret := make([]*worker.WorkerThreadCtl, 0)
+
+	ret = append(ret, worker.NewWorkerThread(workers.NewClientInfoWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Second * 1,
+		WorkerInterval: time.Second * 1,
+		SendChan: nil,
+		RecvChan: miidleChannel,
+	}))
+	ret = append(ret, worker.NewWorkerThread(mmapWorker, worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Second * 3,
+		WorkerInterval: time.Second * 2,
+		SendChan: sendChannel,
+		RecvChan: nil,
+	}))
+	ret = append(ret, worker.NewWorkerThread(workers.NewMiddleWareWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Second * 1,
+		WorkerInterval: time.Second * 2,
+		SendChan: miidleChannel,
+		RecvChan: sendChannel,
+	}))
+
+	return ret, nil
 }

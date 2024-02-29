@@ -1,10 +1,11 @@
-package main
+package workers
 
 import (
 	"fmt"
 	"net"
 	"os"
 	"time"
+	"context"
 
 	"agent_redis/pkg/worker"
 	"agent_redis/pkg/ipc"
@@ -32,8 +33,8 @@ func (t *TcpSendWorker)Close() error {
 func (w *TcpSendWorker)GetName() string {
 	return "TcpSendWorker"
 }
-func (t *TcpSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
-	data, ok := args[0].([]byte)
+func (t *TcpSendWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
+	data, ok := args.Value("DATA").([]byte)
 	if !ok {
 		return nil, os.ErrInvalid
 	}
@@ -64,8 +65,8 @@ func (t *MmapSendWorker)Close() error {
 	return t.client.Close()
 }
 
-func (t *MmapSendWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
-	data, ok := args[0].([]byte)
+func (t *MmapSendWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
+	data, ok := args.Value("DATA").([]byte)
 	if !ok {
 		return nil, os.ErrInvalid
 	}

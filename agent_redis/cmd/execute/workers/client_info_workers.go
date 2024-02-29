@@ -1,4 +1,4 @@
-package main
+package workers
 
 import (
 	"context"
@@ -20,8 +20,8 @@ func NewClientInfoWorker() *ClientInfoWorker {
 func (w *ClientInfoWorker)GetName() string {
 	return "ClientInfoWorker"
 }
-func (w *ClientInfoWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
-	ctx := args[0].(context.Context)
+func (w *ClientInfoWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
+	ctx := args
 	list, err := db.GetCoreClient().GetClientList(ctx)
 	if err != nil {
 		log.GetLogger().Debug(err.Error())

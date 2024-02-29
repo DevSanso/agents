@@ -1,10 +1,11 @@
-package main
+package workers
 
 import (
 	"time"
 	"os"
 	"sync"
 	"sync/atomic"
+	"context"
 	"math"
 
 	"google.golang.org/protobuf/proto"
@@ -66,12 +67,15 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 func (w *MiddleWareWorker)GetName() string {
 	return "MiddleWareWorker"
 }
-func (t *MiddleWareWorker)Work(args ...interface{}) (*worker.WorkerResponse, error) {
+func (t *MiddleWareWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
 	var ret *worker.WorkerResponse = nil
 	var retErr error = nil
 	
-	if args[0] != nil {
-		res, ok := args[0].(*worker.WorkerResponse)
+
+	value := args.Value("DATA")
+
+	if value != nil {
+		res, ok := value.(*worker.WorkerResponse)
 		if !ok {
 			log.GetLogger().Debug("MiddleWareWorker:Work:args[0] is not *worker.WorkerResponse")
 			return nil, os.ErrInvalid

@@ -2,10 +2,12 @@ package main
 
 import (
 	"os"
+	"time"
+	"os/signal"
+	"syscall"
 
 	"agent_redis/pkg/config"
 	"agent_redis/pkg/global/g_var"
-	"agent_redis/pkg/worker"
 )
 
 func main() {
@@ -22,13 +24,33 @@ func main() {
 	if err != nil {
 		panic("ReadConfig File Erorr : " + err.Error())
 	}
-	wBuilder := worker.NewWorkerManagerBuilder()
+
 
 	g_var.InitGlobalVar(agent_id)
 	initLogger(cfg)
 	initAgentDbClient(cfg)
-	initWorkerManagerBuilder(cfg, wBuilder)
 
-	wm := wBuilder.Build()
-	wm.StartAndBlock()
+	ctls, workerErr := initWorkers(cfg)
+
+	if workerErr != nil {
+		panic("Init Workers Error : " + workerErr.Error())
+	}
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	mainIsRun := true
+
+	for mainIsRun {
+		select {
+			case <-sigs:
+				mainIsRun = false
+				continue
+			default:
+				time.Sleep(time.Second * 10)
+		}
+	}
+
+	for _, ctl := range ctls {
+		ctl.Close()
+	}
 }
