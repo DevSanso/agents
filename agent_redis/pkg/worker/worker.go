@@ -63,6 +63,7 @@ func workerArgsValueSet(parent context.Context, key string, ch <- chan *WorkerRe
 
 func startNonBlockThread(args WorkerThreadStartUpArgs) {
 	isRun := true
+
 	for isRun {
 		select {
 		case <-args.threadCtx.Done():
@@ -78,15 +79,15 @@ func startNonBlockThread(args WorkerThreadStartUpArgs) {
 			continue
 		}
 
-		log.GetLogger().Debug(fmt.Sprintf("Worker[%s] is running", args.worker.GetName()))
 		timeoutCtx, cancel := context.WithTimeout(ctx, args.WorkerTimeOut)
 		res, workErr := args.worker.Work(timeoutCtx)
 		cancel()
 
 		if workErr != nil {
-			log.GetLogger().Error(fmt.Sprintf("Worker[%s] is return Error : %s", args.worker.GetName(), workErr.Error()))
+			log.GetLogger().Debug(fmt.Sprintf("Worker[%s] - ERROR - is return Error : %s", args.worker.GetName(), workErr.Error()))
 			continue
 		}
+
 		if args.SendChan != nil {
 			if res != nil {
 				args.SendChan <- res

@@ -14,7 +14,7 @@ import (
 )
 
 func initGoRuntime() error {
-	runtime.GOMAXPROCS(4)
+	runtime.GOMAXPROCS(12)
 	return nil
 }
 
@@ -72,20 +72,41 @@ func initWorkers(cfg *config.Config) ([]*worker.WorkerThreadCtl, error) {
 	ret := make([]*worker.WorkerThreadCtl, 0)
 
 	ret = append(ret, worker.NewWorkerThread(workers.NewClientInfoWorker(), worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Millisecond * 900,
+		WorkerTimeOut: time.Millisecond * 50,
 		WorkerInterval: time.Second * 1,
 		SendChan: miidleChannel,
 		RecvChan: nil,
 	}))
+
+	ret = append(ret, worker.NewWorkerThread(workers.NewStatInfoWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Millisecond * 100,
+		WorkerInterval: time.Second * 60,
+		SendChan: miidleChannel,
+		RecvChan: nil,
+	}))
+
+	ret = append(ret, worker.NewWorkerThread(workers.NewMemInfoWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Millisecond * 100,
+		WorkerInterval: time.Second * 3,
+		SendChan: miidleChannel,
+		RecvChan: nil,
+	}))
+	ret = append(ret, worker.NewWorkerThread(workers.NewCpuInfoWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Millisecond * 100,
+		WorkerInterval: time.Second * 3,
+		SendChan: miidleChannel,
+		RecvChan: nil,
+	}))
+	
 	ret = append(ret, worker.NewWorkerThread(mmapWorker, worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Millisecond * 4000,
-		WorkerInterval: time.Millisecond * 5100,
+		WorkerTimeOut: time.Millisecond * 100,
+		WorkerInterval: time.Millisecond * 100,
 		SendChan: nil,
 		RecvChan: sendChannel,
 	}))
 	ret = append(ret, worker.NewWorkerThread(workers.NewMiddleWareWorker(), worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Millisecond * 800,
-		WorkerInterval: time.Millisecond * 1050,
+		WorkerTimeOut: time.Millisecond * 90,
+		WorkerInterval: time.Millisecond * 90,
 		SendChan: sendChannel,
 		RecvChan: miidleChannel,
 	}))

@@ -21,6 +21,8 @@ type MiddleWareWorker struct {
 	buf map[int][]byte
 	mutex sync.Mutex
 	seq uint64
+
+	intervalAlreadySend bool
 }
 
 func NewMiddleWareWorker() *MiddleWareWorker {
@@ -30,13 +32,20 @@ func NewMiddleWareWorker() *MiddleWareWorker {
 }
 
 func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
-	if len(t.buf) <= 0 && !t.isInterval() {
+	isSend := t.isInterval()
+	
+	if !isSend {
+		t.intervalAlreadySend = false
+	}
+
+	if len(t.buf) <= 0 || !isSend || (isSend && t.intervalAlreadySend) {
 		return &worker.WorkerResponse{
 			DType: int(-1),
 			Data: nil,
 		}, nil
 	}
 
+	t.intervalAlreadySend = true
 	retSanp := protos.AgentRedisSnap{}
 
 	for key,value := range t.buf {
@@ -62,7 +71,7 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 		return nil, outputErr
 	}
 
-	log.GetLogger().Debug("MiddleWareWorker:Work: make send data")
+	log.GetLogger().Debug("MiddleWareWorker make send data")
 
 	return &worker.WorkerResponse{
 		DType: int(-1),
@@ -74,9 +83,11 @@ func (w *MiddleWareWorker)GetName() string {
 }
 
 func (w *MiddleWareWorker)isInterval() bool {
-	sec := time.Now().Second()
-	return sec % 5 == 0
+	n := time.Now()
+	sec := n.Second()
+	return sec % 3 == 0
 }
+
 
 func (t *MiddleWareWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
 	var ret *worker.WorkerResponse = nil
@@ -99,6 +110,5 @@ func (t *MiddleWareWorker)Work(args context.Context) (*worker.WorkerResponse, er
 	ret, retErr = t.makeSendData()
 	t.mutex.Unlock()
 
-	time.Sleep(time.Millisecond * 100)
 	return ret, retErr
 }
