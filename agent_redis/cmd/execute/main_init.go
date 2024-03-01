@@ -1,28 +1,35 @@
 package main
 
 import (
-	"os"
+	"context"
 	"time"
+	"runtime"
 
-	"agent_redis/pkg/config"
-	"agent_redis/pkg/global/log"
-	g_db "agent_redis/pkg/global/db"
-	"agent_redis/pkg/db"
-	"agent_redis/pkg/worker"
 	"agent_redis/cmd/execute/workers"
+	"agent_redis/pkg/config"
+	"agent_redis/pkg/db"
+	g_db "agent_redis/pkg/global/db"
+	"agent_redis/pkg/global/log"
+	"agent_redis/pkg/worker"
 )
 
-func initLogger(cfg *config.Config) {
+func initGoRuntime() error {
+	runtime.GOMAXPROCS(4)
+	return nil
+}
+
+func initLogger(cfg *config.Config) error {
 	err := log.InitLogger(cfg.LogFilePath, log.LogLevel(cfg.LogLevel))
 	if err != nil {
-		panic("Init Logger Error : " + err.Error())
+		return err
 	}
 	if(len(cfg.LogFilePath) <= 0) {
 		log.GetLogger().Warn("LogFilePath is empty, only print to console")
 	}
+	return nil
 }
 
-func initAgentDbClient(cfg *config.Config) {
+func initAgentDbClient(cfg *config.Config) error {
 	err := g_db.InitRedis(&db.ClientOptions{
 		Timeout: 1,
 		Ip : cfg.Redis.Ip,
@@ -34,8 +41,18 @@ func initAgentDbClient(cfg *config.Config) {
 	})
 	if err != nil {
 		log.GetLogger().Error(err.Error())
-		os.Exit(2)
+		return err
 	}
+	pingCtx, cancleFunc := context.WithTimeout(context.Background(), time.Second * 3)
+	defer cancleFunc()
+	err = g_db.GetCoreClient().Ping(pingCtx)
+
+	if err != nil {
+		log.GetLogger().Error(err.Error())
+		return err
+	}
+	
+	return nil
 }
 
 func initWorkers(cfg *config.Config) ([]*worker.WorkerThreadCtl, error) {
@@ -55,22 +72,22 @@ func initWorkers(cfg *config.Config) ([]*worker.WorkerThreadCtl, error) {
 	ret := make([]*worker.WorkerThreadCtl, 0)
 
 	ret = append(ret, worker.NewWorkerThread(workers.NewClientInfoWorker(), worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Second * 1,
+		WorkerTimeOut: time.Millisecond * 900,
 		WorkerInterval: time.Second * 1,
-		SendChan: nil,
-		RecvChan: miidleChannel,
-	}))
-	ret = append(ret, worker.NewWorkerThread(mmapWorker, worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Second * 3,
-		WorkerInterval: time.Second * 2,
-		SendChan: sendChannel,
+		SendChan: miidleChannel,
 		RecvChan: nil,
 	}))
-	ret = append(ret, worker.NewWorkerThread(workers.NewMiddleWareWorker(), worker.WorkerThreadStartUpArgs{
-		WorkerTimeOut: time.Second * 1,
-		WorkerInterval: time.Second * 2,
-		SendChan: miidleChannel,
+	ret = append(ret, worker.NewWorkerThread(mmapWorker, worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Millisecond * 4000,
+		WorkerInterval: time.Millisecond * 5100,
+		SendChan: nil,
 		RecvChan: sendChannel,
+	}))
+	ret = append(ret, worker.NewWorkerThread(workers.NewMiddleWareWorker(), worker.WorkerThreadStartUpArgs{
+		WorkerTimeOut: time.Millisecond * 800,
+		WorkerInterval: time.Millisecond * 1050,
+		SendChan: sendChannel,
+		RecvChan: miidleChannel,
 	}))
 
 	return ret, nil

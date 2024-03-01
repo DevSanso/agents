@@ -1,13 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"time"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"agent_redis/pkg/config"
 	"agent_redis/pkg/global/g_var"
+	"agent_redis/pkg/global/log"
 )
 
 func main() {
@@ -18,17 +20,23 @@ func main() {
 
 	configPath := os.Args[1]
 	agent_id := os.Args[2]
-	
 
 	cfg, err := config.ReadConfigFromFile(configPath)
 	if err != nil {
 		panic("ReadConfig File Erorr : " + err.Error())
 	}
 
-
+	initGoRuntime()
+	
 	g_var.InitGlobalVar(agent_id)
-	initLogger(cfg)
-	initAgentDbClient(cfg)
+	err = initLogger(cfg)
+	if err != nil {
+		panic("InitLogger Erorr : " + err.Error())
+	}
+	err = initAgentDbClient(cfg)
+	if err != nil {
+		panic("InitAgentDBClient Erorr : " + err.Error())
+	}
 
 	ctls, workerErr := initWorkers(cfg)
 
@@ -40,9 +48,12 @@ func main() {
 
 	mainIsRun := true
 
+	fmt.Println("Agent is running")
+
 	for mainIsRun {
 		select {
-			case <-sigs:
+			case sig := <-sigs:
+				log.GetLogger().Info(fmt.Sprintf("Agent %s(%s) is stopping", agent_id, sig.String()))
 				mainIsRun = false
 				continue
 			default:

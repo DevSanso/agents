@@ -21,6 +21,7 @@ type IRedisCoreClientCommander interface {
 	GetDbSize(ctx context.Context, dbname int) (*protos.DbSize, error)
 	InfoCpu(ctx context.Context) (*protos.RedisCpuInfo, error)
 	InfoMemory(ctx context.Context) (*protos.RedisMemoryInfo, error) 
+	Ping(ctx context.Context) error
 }
 
 type IRedisStackClientCommander interface {
@@ -65,6 +66,10 @@ func newRedisClientCommander(timeout int, ip string, port int, username string, 
 
 func (rcc *redisClientCommander) Close() error {
 	return rcc.client.Close()
+}
+
+func (rcc *redisClientCommander)Ping(ctx context.Context) error {
+	return rcc.client.Ping(ctx).Err()
 }
 
 func NewCoreClient(opts *ClientOptions) IRedisCoreClientCommander {

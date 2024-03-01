@@ -10,7 +10,7 @@ import (
 
 var (
 	once   sync.Once = sync.Once{}
-	logger *zap.Logger
+	logger *zap.SugaredLogger
 )
 
 type LogLevel string
@@ -45,6 +45,7 @@ func convertLevel(level LogLevel) (zap.AtomicLevel, error) {
 			ret = zap.NewAtomicLevelAt(zap.WarnLevel)
 		case "ERROR":
 			ret = zap.NewAtomicLevelAt(zap.ErrorLevel)
+		
 		default:
 			err = ErrorInvalidLogLevel
 
@@ -74,17 +75,24 @@ func InitLogger(filePath string, level LogLevel) (err error) {
 		if cfg.Level.Level() >= zap.ErrorLevel {
 			cfg.DisableCaller = true
 		}
+
 		cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-		logger, err = cfg.Build()
+		l, loggerErr := cfg.Build()
+		if loggerErr != nil {
+			err = loggerErr
+			return
+		}
+		defer l.Sync()
+		logger = l.Sugar()
 	})
 	return
 }
 
 type ILogger interface {
-	Debug(string, ...zapcore.Field)
-	Info(string, ...zapcore.Field)
-	Error(string, ...zapcore.Field)
-	Warn(string, ...zapcore.Field)
+	Debug(args ...interface{})
+	Info(args ...interface{})
+	Error(args ...interface{})
+	Warn(args ...interface{})
 }
 
 func GetLogger() ILogger {

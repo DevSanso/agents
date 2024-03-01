@@ -1,9 +1,10 @@
 package worker
 
 import (
-	"time"
-	"context"
 	"agent_redis/pkg/global/log"
+	"context"
+	"fmt"
+	"time"
 )
 type WorkerResponse struct{
 	DType int
@@ -62,29 +63,35 @@ func workerArgsValueSet(parent context.Context, key string, ch <- chan *WorkerRe
 
 func startNonBlockThread(args WorkerThreadStartUpArgs) {
 	isRun := true
-	for  {
+	for isRun {
 		select {
 		case <-args.threadCtx.Done():
 			isRun = false
+		default:
 		}
-
 		if !isRun {continue}
-
+		
 		<-args.tick.C
 
 		ctx := workerArgsValueSet(context.Background(), "DATA", args.RecvChan)
+		if ctx == nil {
+			continue
+		}
+
+		log.GetLogger().Debug(fmt.Sprintf("Worker[%s] is running", args.worker.GetName()))
 		timeoutCtx, cancel := context.WithTimeout(ctx, args.WorkerTimeOut)
 		res, workErr := args.worker.Work(timeoutCtx)
 		cancel()
 
 		if workErr != nil {
-			log.GetLogger().Error(workErr.Error())
+			log.GetLogger().Error(fmt.Sprintf("Worker[%s] is return Error : %s", args.worker.GetName(), workErr.Error()))
 			continue
 		}
-
-		if res != nil {
-			if args.SendChan != nil {
+		if args.SendChan != nil {
+			if res != nil {
 				args.SendChan <- res
+			}else {
+				log.GetLogger().Error(fmt.Sprintf("Worker[%s] send data return nil", args.worker.GetName()))
 			}
 		}
 

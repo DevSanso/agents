@@ -1,14 +1,14 @@
 package workers
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"os"
 	"time"
-	"context"
 
-	"agent_redis/pkg/worker"
 	"agent_redis/pkg/ipc"
+	"agent_redis/pkg/worker"
 )
 
 type TcpSendWorker struct {
@@ -34,10 +34,17 @@ func (w *TcpSendWorker)GetName() string {
 	return "TcpSendWorker"
 }
 func (t *TcpSendWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
-	data, ok := args.Value("DATA").([]byte)
+	res, ok := args.Value("DATA").(*worker.WorkerResponse)
+
 	if !ok {
 		return nil, os.ErrInvalid
 	}
+	data := res.Data
+
+	if data == nil {
+		return nil, nil
+	}
+
 	deadline := time.Now().Add(time.Second * 3)
 	t.client.SetWriteDeadline(deadline)
 	_, err := t.client.Write(data)
@@ -54,6 +61,7 @@ func NewMmapSendWorker(filename string, size int) (*MmapSendWorker, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &MmapSendWorker{
 		client: c,
 	}, nil
@@ -66,11 +74,15 @@ func (t *MmapSendWorker)Close() error {
 }
 
 func (t *MmapSendWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
-	data, ok := args.Value("DATA").([]byte)
+	data, ok := args.Value("DATA").(*worker.WorkerResponse)
 	if !ok {
 		return nil, os.ErrInvalid
 	}
-	_,err := t.client.Write(data)
+	if data.Data == nil {
+		return nil, nil
+	}
+
+	_,err := t.client.Write(data.Data)
 
 	return nil, err
 }

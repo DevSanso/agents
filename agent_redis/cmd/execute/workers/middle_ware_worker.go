@@ -30,8 +30,11 @@ func NewMiddleWareWorker() *MiddleWareWorker {
 }
 
 func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
-	if len(t.buf) <= 0 {
-		return nil, nil
+	if len(t.buf) <= 0 && !t.isInterval() {
+		return &worker.WorkerResponse{
+			DType: int(-1),
+			Data: nil,
+		}, nil
 	}
 
 	retSanp := protos.AgentRedisSnap{}
@@ -59,6 +62,8 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 		return nil, outputErr
 	}
 
+	log.GetLogger().Debug("MiddleWareWorker:Work: make send data")
+
 	return &worker.WorkerResponse{
 		DType: int(-1),
 		Data: output,
@@ -67,11 +72,16 @@ func (t *MiddleWareWorker)makeSendData() (*worker.WorkerResponse, error) {
 func (w *MiddleWareWorker)GetName() string {
 	return "MiddleWareWorker"
 }
+
+func (w *MiddleWareWorker)isInterval() bool {
+	sec := time.Now().Second()
+	return sec % 5 == 0
+}
+
 func (t *MiddleWareWorker)Work(args context.Context) (*worker.WorkerResponse, error) {
 	var ret *worker.WorkerResponse = nil
 	var retErr error = nil
 	
-
 	value := args.Value("DATA")
 
 	if value != nil {
@@ -85,12 +95,10 @@ func (t *MiddleWareWorker)Work(args context.Context) (*worker.WorkerResponse, er
 		t.mutex.Unlock()
 	}
 
-	if (time.Now().UnixMilli() % (int64(time.Millisecond) * 4000) / 1000000) <= 100 {
-		t.mutex.Lock()
-		ret, retErr = t.makeSendData()
-		log.GetLogger().Debug("MiddleWareWorker:Work: make send data");
-		t.mutex.Unlock()
-	}
+	t.mutex.Lock()
+	ret, retErr = t.makeSendData()
+	t.mutex.Unlock()
+
 	time.Sleep(time.Millisecond * 100)
 	return ret, retErr
 }
