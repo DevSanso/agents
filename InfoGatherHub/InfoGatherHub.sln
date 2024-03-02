@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubServer", "HubServer\HubServer.csproj", "{79373FB1-E52D-4A26-8F4D-467E615CEB30}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubSender", "HubSender\HubSender.csproj", "{C1521791-93B9-4A06-9508-CB52D0178250}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubCommon", "HubCommon\HubCommon.csproj", "{5AB138AF-7F21-4F1F-8B81-C216D2C8B296}"

@@ -1,0 +1,12 @@
+[LogSetting]
+type = "Display"
+logPath = "../log/hubsender.log"
+
+[PusherSetting]
+type = "Console"
+ip = ""
+port = 0
+
+[MmapSnapSetting.Redis]
+path = "../tmp/redis.mmap"
+size = 512000

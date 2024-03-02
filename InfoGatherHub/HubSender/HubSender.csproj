@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project DefaultTargets="Build" Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\HubGlobal\HubGlobal.csproj" />
@@ -15,6 +15,19 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier> 
   </PropertyGroup>
 
+  <Target Name="Dist" DependsOnTargets="Publish">
+       <Message Importance="high" Text="Make Dist folder" /> 
+       <Exec Command="cp -r $(ProjectDir)/Content/* $(ProjectDir)/../../dist" />
+       <Exec Command="cp $(ProjectDir)$(PublishDir)$(ProjectName) $(ProjectDir)/../../dist/bin" />
+  </Target>
+
+
+
 </Project>
+
+

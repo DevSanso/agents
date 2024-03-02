@@ -48,14 +48,15 @@ internal class WorkerController : IDisposable
 
     private void InitSnapWorker(Config config)
     {
-        if(config.osSnapSetting != null) {
-            IWorker osSnapWorker = new ReadOsSnapWorker(new MemMapClient(config.osSnapSetting.path, config.osSnapSetting.size), sendQ);
+        var OsConfig = config.MmapSnapSetting["Redis"];
+        if(OsConfig!= null) {
+            IWorker osSnapWorker = new ReadOsSnapWorker(new MemMapClient(OsConfig.path, OsConfig.size), sendQ);
             snapWorkers.Add("os", osSnapWorker);
         }
 
-
-        if(config.redisSnapSetting != null) {
-            IWorker redisSnapWorker = new ReadRedisSnapWorker(new MemMapClient(config.redisSnapSetting.path, config.redisSnapSetting.size), sendQ);
+        var redisConfig = config.MmapSnapSetting["Redis"];
+        if(redisConfig != null) {
+            IWorker redisSnapWorker = new ReadRedisSnapWorker(new MemMapClient(redisConfig.path, redisConfig.size), sendQ);
             snapWorkers.Add("redis", redisSnapWorker);
         }
     }

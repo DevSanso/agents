@@ -6,6 +6,11 @@ using InfoGatherHub.HubSender;
 using InfoGatherHub.HubCommon.Display;
 using InfoGatherHub.HubGlobal.Config;
 
+if (args.Length != 2)
+{
+    Console.WriteLine("Usage: HubSender <configPath>");
+    Environment.Exit(1);
+}
 
 string configPath = args[1];
 

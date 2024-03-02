@@ -3,34 +3,43 @@ namespace InfoGatherHub.HubSender.Ipc;
 using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using K4os.Compression.LZ4.Internal;
+
 public class MemMapClient : ISnapClient
 {
-    private MemoryMappedFile? snap;
-    private int size = 0;
-    private byte[] buffer;
+    private readonly string path = "";
+    private readonly int size = 0;
+    private byte[]? buffer;
+    private readonly object lockObj = new();
     public MemMapClient(string pathname, int size)
     {  
-        snap = MemoryMappedFile.CreateFromFile(File.Open(pathname, FileMode.Open, FileAccess.Read), 
-            null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
+        this.path = pathname;
         this.size = size;
         buffer = new byte[size];
     }
     public void FetchSnapData()
     {
-        using(var accessor = snap!.CreateViewStream(0, this.size, MemoryMappedFileAccess.CopyOnWrite))
-        {
-            accessor!.Read(buffer,0, size);
-        }
+        using var file = MemoryMappedFile.CreateFromFile(File.Open(this.path, FileMode.Open, FileAccess.Read), 
+            null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
+
+        using var accessor = file!.CreateViewStream(0, this.size, MemoryMappedFileAccess.CopyOnWrite);
+
+        lock(lockObj)
+            accessor!.Read(buffer!, 0, size);
+        
     }
     public byte[]? GetSnapData()
     {
         byte []ret = new byte[size];
-        ret.CopyTo(this.buffer, 0);
+        
+        lock(lockObj)
+            ret.CopyTo(this.buffer!, 0);
+        
 
         return ret;
     }
     public void Dispose()
     {
-        snap?.Dispose();
+        this.buffer = null;
     }
 }
