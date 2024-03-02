@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -72,6 +73,7 @@ func (rcc *redisClientCommander)Ping(ctx context.Context) error {
 	return rcc.client.Ping(ctx).Err()
 }
 
-func NewCoreClient(opts *ClientOptions) IRedisCoreClientCommander {
-	return newRedisClientCommander(opts.Timeout, opts.Ip, opts.Port, opts.Username, opts.Password, opts.Db, opts.DbVersion)
+func NewCoreClient(opts *ClientOptions) (IRedisCoreClientCommander, io.Closer) {
+	c := newRedisClientCommander(opts.Timeout, opts.Ip, opts.Port, opts.Username, opts.Password, opts.Db, opts.DbVersion)
+	return c,c
 }

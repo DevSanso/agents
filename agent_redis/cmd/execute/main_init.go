@@ -103,6 +103,7 @@ func initWorkers(cfg *config.Config) ([]*worker.WorkerThreadCtl, error) {
 		WorkerInterval: time.Millisecond * 100,
 		SendChan: nil,
 		RecvChan: sendChannel,
+		WorkerCloser: mmapWorker,
 	}))
 	ret = append(ret, worker.NewWorkerThread(workers.NewMiddleWareWorker(), worker.WorkerThreadStartUpArgs{
 		WorkerTimeOut: time.Millisecond * 90,

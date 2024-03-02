@@ -15,7 +15,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	commander = db.NewCoreClient(&db.ClientOptions{
+	command,_ := db.NewCoreClient(&db.ClientOptions{
 		Timeout: 1,
 		Ip : cfg.Redis.Ip,
 		Port: cfg.Redis.Port,
@@ -24,7 +24,7 @@ func init() {
 		Db: cfg.Redis.Dbname,
 		DbVersion: cfg.Redis.DbVersion,
 	})
-	
+	commander = command
 }
 
 func TestRedisClientList(t *testing.T) {

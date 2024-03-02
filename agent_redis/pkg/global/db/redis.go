@@ -1,19 +1,21 @@
 package db
 
 import (
-	"sync"
 	redis_db "agent_redis/pkg/db"
+	"io"
+	"sync"
 )
 
 var (
 	once sync.Once
 	core redis_db.IRedisCoreClientCommander
+	dbCloser io.Closer
 )
 
 
 func InitRedis(opt *redis_db.ClientOptions) (err error) {
 	once.Do(func() {
-		core = redis_db.NewCoreClient(opt)
+		core, dbCloser = redis_db.NewCoreClient(opt)
 	})
 
 	return
@@ -21,5 +23,9 @@ func InitRedis(opt *redis_db.ClientOptions) (err error) {
 
 func GetCoreClient() redis_db.IRedisCoreClientCommander {
 	return core
+}
+
+func GetCoreClientCloser() io.Closer {
+	return dbCloser
 }
 

@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"io"
 )
 type WorkerResponse struct{
 	DType int
@@ -26,6 +27,7 @@ type WorkerThreadStartUpArgs struct {
 	WorkerInterval time.Duration
 	SendChan chan *WorkerResponse
 	RecvChan chan *WorkerResponse
+	WorkerCloser io.Closer
 
 	threadCtx context.Context
 	worker IWorker
@@ -96,5 +98,9 @@ func startNonBlockThread(args WorkerThreadStartUpArgs) {
 			}
 		}
 
+	}
+
+	if args.WorkerCloser != nil {
+		args.WorkerCloser.Close()
 	}
 }
