@@ -10,7 +10,7 @@ protobuf:
 	@protoc -I ../protobuf/agent/redis --go_out=./pkg redis_snap.proto
 
 build:
-	@go build -o ../dist/bin/agent_redis -buildmode=exe  ./cmd/execute/*.go
+	@go build -o ../dist/bin/AgentRedis -buildmode=exe  ./cmd/execute/*.go
 
 move_assets:
 	@cp -r ./assets/* ../dist/
