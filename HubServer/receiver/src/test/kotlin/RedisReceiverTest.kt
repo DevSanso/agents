@@ -4,6 +4,9 @@ import redis.clients.jedis.*
 
 import devsanso.github.io.receiver.RedisReceiver
 import devsanso.github.io.receiver.data.RedisReceiverConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 internal class RedisReceiverTest {
@@ -19,6 +22,9 @@ internal class RedisReceiverTest {
         val receiver = RedisReceiver("test", config)
         val sender = Jedis(host,port,config)
 
+        CoroutineScope(Dispatchers.IO).launch {
+            receiver.run()
+        }
         TimeUnit.SECONDS.sleep(3)
 
         sender.use {

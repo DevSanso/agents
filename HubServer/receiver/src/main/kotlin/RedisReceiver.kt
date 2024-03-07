@@ -2,18 +2,16 @@ package devsanso.github.io.receiver
 
 import java.net.URI
 import java.util.concurrent.ArrayBlockingQueue
+import java.io.Closeable
 
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.*
 
 import devsanso.github.io.receiver.data.RedisReceiverConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.io.Closeable
 
-class RedisReceiver constructor(val channel : String, val config: RedisReceiverConfig) : BinaryJedisPubSub(), Closeable {
+
+class RedisReceiver constructor(val channel : String, val config: RedisReceiverConfig)
+    : BinaryJedisPubSub(), Closeable, Runnable {
     private val recvQ : ArrayBlockingQueue<ByteArray> = ArrayBlockingQueue<ByteArray>(100)
     private val connection : Jedis
     private fun connectUrl() : URI = URI("redis://${config.user}:${config.password}@"
@@ -21,17 +19,19 @@ class RedisReceiver constructor(val channel : String, val config: RedisReceiverC
 
     init {
         connection = Jedis(connectUrl(), config)
-
-        val that = this
-        CoroutineScope(Dispatchers.IO).launch {
-            connection.subscribe(that, channel.toByteArray())
-        }
     }
 
     fun recv() : ByteArray? =
         if(recvQ.size > 0) recvQ.take()
         else null
 
+    override fun run() {
+        try {
+            connection.subscribe(this, channel.toByteArray())
+        }catch(e : Exception) {
+            throw e
+        }
+    }
 
     override fun onMessage(channel: ByteArray?, message: ByteArray?) {
         if (message != null) {
@@ -39,7 +39,10 @@ class RedisReceiver constructor(val channel : String, val config: RedisReceiverC
         }
         super.onMessage(channel, message)
     }
-    override fun close() = connection.close()
+    override fun close() {
+        connection.close()
+        recvQ.clear()
+    }
 
 
 
