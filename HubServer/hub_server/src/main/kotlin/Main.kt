@@ -1,4 +1,4 @@
-package devsanso.github.io.HubServer
+package devsanso.github.io.HubServer.hub_server
 
 import java.net.URL
 import java.net.URLClassLoader

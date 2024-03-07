@@ -1,4 +1,4 @@
-package devsanso.github.io.receiver.data
+package devsanso.github.io.HubServer.receiver.data
 
 import redis.clients.jedis.JedisClientConfig
 

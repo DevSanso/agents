@@ -1,4 +1,4 @@
-package devsanso.github.io.receiver
+package devsanso.github.io.HubServer.receiver
 
 import java.net.URI
 import java.util.concurrent.ArrayBlockingQueue
@@ -7,7 +7,7 @@ import java.io.Closeable
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.*
 
-import devsanso.github.io.receiver.data.RedisReceiverConfig
+import devsanso.github.io.HubServer.receiver.data.RedisReceiverConfig
 
 
 class RedisReceiver constructor(val channel : String, val config: RedisReceiverConfig)

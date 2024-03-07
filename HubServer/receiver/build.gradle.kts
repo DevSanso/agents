@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = "devsanso.github.io"
+group = "devsanso.github.io.HubServer"
 version = "1.0-SNAPSHOT"
 
 repositories {
