@@ -25,16 +25,16 @@
 /// of protobuf runtime.
 const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_3_3_0;
 
-// @@protoc_insertion_point(message:agnet.os.Data)
+// @@protoc_insertion_point(message:agent.os.Data)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct Data {
     // message fields
-    // @@protoc_insertion_point(field:agnet.os.Data.format)
+    // @@protoc_insertion_point(field:agent.os.Data.format)
     pub format: ::protobuf::EnumOrUnknown<DataFormat>,
-    // @@protoc_insertion_point(field:agnet.os.Data.raw_data)
+    // @@protoc_insertion_point(field:agent.os.Data.raw_data)
     pub raw_data: ::std::vec::Vec<u8>,
     // special fields
-    // @@protoc_insertion_point(special_field:agnet.os.Data.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.Data.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -165,16 +165,16 @@ impl ::protobuf::reflect::ProtobufValue for Data {
     type RuntimeType = ::protobuf::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-// @@protoc_insertion_point(message:agnet.os.AgentOsSnap)
+// @@protoc_insertion_point(message:agent.os.AgentOsSnap)
 #[derive(PartialEq,Clone,Default,Debug)]
 pub struct AgentOsSnap {
     // message fields
-    // @@protoc_insertion_point(field:agnet.os.AgentOsSnap.unix_epoch)
+    // @@protoc_insertion_point(field:agent.os.AgentOsSnap.unix_epoch)
     pub unix_epoch: u64,
-    // @@protoc_insertion_point(field:agnet.os.AgentOsSnap.datas)
+    // @@protoc_insertion_point(field:agent.os.AgentOsSnap.datas)
     pub datas: ::std::vec::Vec<Data>,
     // special fields
-    // @@protoc_insertion_point(special_field:agnet.os.AgentOsSnap.special_fields)
+    // @@protoc_insertion_point(special_field:agent.os.AgentOsSnap.special_fields)
     pub special_fields: ::protobuf::SpecialFields,
 }
 
@@ -307,15 +307,15 @@ impl ::protobuf::reflect::ProtobufValue for AgentOsSnap {
 }
 
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-// @@protoc_insertion_point(enum:agnet.os.DataFormat)
+// @@protoc_insertion_point(enum:agent.os.DataFormat)
 pub enum DataFormat {
-    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetArp)
+    // @@protoc_insertion_point(enum_value:agent.os.DataFormat.NetArp)
     NetArp = 0,
-    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetDev)
+    // @@protoc_insertion_point(enum_value:agent.os.DataFormat.NetDev)
     NetDev = 1,
-    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetSockStat)
+    // @@protoc_insertion_point(enum_value:agent.os.DataFormat.NetSockStat)
     NetSockStat = 2,
-    // @@protoc_insertion_point(enum_value:agnet.os.DataFormat.NetTcp4Stat)
+    // @@protoc_insertion_point(enum_value:agent.os.DataFormat.NetTcp4Stat)
     NetTcp4Stat = 3,
 }
 
@@ -379,11 +379,11 @@ impl DataFormat {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\ros_snap.proto\x12\x08agnet.os\"O\n\x04Data\x12,\n\x06format\x18\x01\
-    \x20\x01(\x0e2\x14.agnet.os.DataFormatR\x06format\x12\x19\n\x08raw_data\
+    \n\ros_snap.proto\x12\x08agent.os\"O\n\x04Data\x12,\n\x06format\x18\x01\
+    \x20\x01(\x0e2\x14.agent.os.DataFormatR\x06format\x12\x19\n\x08raw_data\
     \x18\x02\x20\x01(\x0cR\x07rawData\"R\n\x0bAgentOsSnap\x12\x1d\n\nunix_ep\
     och\x18\x01\x20\x01(\x04R\tunixEpoch\x12$\n\x05datas\x18\x02\x20\x03(\
-    \x0b2\x0e.agnet.os.DataR\x05datas*F\n\nDataFormat\x12\n\n\x06NetArp\x10\
+    \x0b2\x0e.agent.os.DataR\x05datas*F\n\nDataFormat\x12\n\n\x06NetArp\x10\
     \0\x12\n\n\x06NetDev\x10\x01\x12\x0f\n\x0bNetSockStat\x10\x02\x12\x0f\n\
     \x0bNetTcp4Stat\x10\x03B#\xaa\x02\x20InfoGatherHub.HubProtos.Agent.Osb\
     \x06proto3\
