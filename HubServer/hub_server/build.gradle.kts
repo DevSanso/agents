@@ -18,6 +18,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22")
     compileOnly(project(":common"))
+    compileOnly(project(":protos"))
 }
 
 application {
