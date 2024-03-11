@@ -1,0 +1,8 @@
+name = "Sample Name"
+version = "1.0.0"
+port = 8080
+
+[props]
+key1 = "value1"
+key2 = "value2"
+key3 = "value3"
