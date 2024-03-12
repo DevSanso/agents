@@ -1,14 +1,9 @@
 package devsanso.github.io.HubServer.hub_server
 
+import devsanso.github.io.HubServer.hub_server.data.config.CommonConfig
+import devsanso.github.io.HubServer.common.loader.ConfigLoader
 import java.net.URL
-import java.net.URLClassLoader
-import devsanso.github.io.HubServer.common.Common
 
-fun main() {
-
-    val cl = ClassLoader.getSystemClassLoader()
-
-    println("Hello World!")
-    val com = Common()
-    com.hello()
+fun main(args : Array<String>) {
+    val config = ConfigLoader.load<CommonConfig>(URL(args[1]))
 }

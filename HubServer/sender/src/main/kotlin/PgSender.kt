@@ -12,7 +12,7 @@ class PgSender constructor(val config : PgSenderConfig, poolMax : Int) : AbsSend
     private val connPool : Pool<Connection> = Pool(poolMax, this.genConnection())
     private val props = Properties().apply {
         this.setProperty("user", config.user)
-        this.setProperty("password", config.passsword)
+        this.setProperty("password", config.password)
         this.setProperty("ssl", "false")
         this.setProperty("connectTimeout", "60")
         this.setProperty("ApplicationName", "Agent - Hub Server")

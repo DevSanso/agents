@@ -3,6 +3,7 @@ syntax = "proto3";
 package agent.redis; // 패키지 이름을 설정합니다.
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Redis";
+option java_package = "devsanso.github.io.HubServer.protos.agent.redis";
 option go_package = "./protos";
 
 message RedisClientInfo {

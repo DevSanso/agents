@@ -12,7 +12,7 @@ repositories {
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     compileOnly(project(":common"))
-    compileOnly(project(":global"))
+    implementation(project(":global"))
     runtimeOnly("org.postgresql:postgresql:42.7.2")
     implementation("org.mybatis:mybatis:3.5.15")
 

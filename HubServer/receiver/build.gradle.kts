@@ -12,7 +12,7 @@ repositories {
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("redis.clients:jedis:5.1.1")
-    compileOnly(project(":common"))
+    implementation(project(":common"))
 }
 
 tasks.test {

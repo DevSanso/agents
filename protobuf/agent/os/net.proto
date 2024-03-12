@@ -3,6 +3,8 @@ syntax = "proto3";
 package agent.os.net;
 
 option csharp_namespace = "InfoGatherHub.HubProtos.Agent.Os.Net";
+option java_multiple_files = true;
+option java_package = "devsanso.github.io.HubServer.protos.agent.os.net";
 
 message ArpInfo {
     string ip_address = 1;
