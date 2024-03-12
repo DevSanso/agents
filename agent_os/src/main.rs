@@ -1,22 +1,20 @@
 pub mod config;
 pub mod ipc;
-pub mod pool;
 pub mod search;
 pub mod task;
 pub mod utils;
 pub mod protos;
+pub mod structure;
 
-use std::env;
+use std::{env, thread};
 use std::error::Error;
 use std::io;
 use std::sync::Arc;
 use std::time;
 
-use pool::Pool;
-use utils::buffer;
-
-const OS_DETAILS_NET_INTERVAL: u64 = 6;
-const IPC_SEND_INTERVAL: u64 = 2;
+use structure::pool;
+use structure::pool::Pool;
+use structure::buffer;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config_path = env::args().skip(1).next();
@@ -37,34 +35,21 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let buf = buffer::DoubleBuffer::<protos::os_snap::Data>::new();
 
+    {
+        let mut tp_g = tp.lock().unwrap();
+        
+        let buf_ipc = Arc::clone(&buf);
+        let buf_stat = Arc::clone(&buf);
+
+        let ipc = task::ipc_send_task_gen(ipc_listener.get_stream()?, buf_ipc);
+        let net_stat = task::os_details_net_stat_thread_gen(buf_stat);
+        
+        tp_g.run_func((), ipc)?;
+        tp_g.run_func((), net_stat)?;
+    }
+
     loop {
-        {
-            let now = utils::util_time::get_unix_epoch_now();
-
-            let tp_g_res = tp.lock();
-
-            if tp_g_res.is_err() {
-                return Err(Box::new(io::Error::new(
-                    io::ErrorKind::Interrupted,
-                    "thread pool mutex lock is failed",
-                )));
-            }
-
-            let mut tp_g = tp_g_res.unwrap();
-            
-            if utils::util_time::is_interval(now, time::Duration::from_secs(IPC_SEND_INTERVAL)) {
-                let buf_clone = Arc::clone(&buf);
-                let fun = task::ipc_send_task_gen(ipc_listener.get_stream()?, buf_clone);
-
-                tp_g.run_func((), fun)?;
-            }
-            
-            if utils::util_time::is_interval(now, time::Duration::from_secs(OS_DETAILS_NET_INTERVAL)) {
-                let buf_clone = Arc::clone(&buf);
-                let fun = task::os_details_net_stat_thread_gen(buf_clone);
-                tp_g.run_func((), fun)?;
-            }
-        }
+        thread::sleep(time::Duration::from_secs(1));
     }
 
     //Ok(())

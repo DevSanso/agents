@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::sync::atomic::{self,AtomicU16};
 use std::thread::{self, sleep, JoinHandle};
 use std::io;
 use std::sync::{Mutex, Arc};
@@ -24,7 +24,7 @@ impl Default for ThreadSignal {
 #[derive(Debug, Default)]
 struct ThreadState {
     signal : ThreadSignal,
-    sender_cnt : usize
+    sender_cnt : AtomicU16
 }
 
 impl ThreadState {
@@ -32,16 +32,16 @@ impl ThreadState {
         self.signal = signal;
     }
     pub(super) fn incr_sender_cnt(&mut self) {
-        self.sender_cnt += 1;
+        self.sender_cnt.fetch_add(1, atomic::Ordering::SeqCst);
     }
     pub(super) fn decr_sender_cnt(&mut self) {
-        self.sender_cnt -= 1;
+        self.sender_cnt.fetch_sub(1, atomic::Ordering::SeqCst);
     }
     pub(super) fn get_signal(&self) -> ThreadSignal {
         self.signal.clone()
     }
     pub(super) fn get_sender_cnt(&self) -> usize {
-        self.sender_cnt
+        self.sender_cnt.load(atomic::Ordering::Relaxed) as usize
     }
 }
 
@@ -75,9 +75,7 @@ impl ThreadImpl {
                     return;
                 }
             }
-
             let f_ret = recv.try_recv();
-            ThreadImpl::switch_states(&ptr, ThreadSignal::Running);
 
             if f_ret.is_err() {
                 if f_ret.err().unwrap() == TryRecvError::Empty {
@@ -86,8 +84,13 @@ impl ThreadImpl {
                 ThreadImpl::switch_states(&ptr, ThreadSignal::Error);
                 return;
             }
+            ThreadImpl::switch_states(&ptr, ThreadSignal::Running);
+            let mut locked = ptr.lock().unwrap();
+            locked.decr_sender_cnt();
+            drop(locked);
 
             let f = f_ret.unwrap();
+            
             let _ = f(());
             ThreadImpl::switch_states(&ptr, ThreadSignal::Idle);
             sleep(Duration::from_micros(10));
@@ -123,5 +126,9 @@ impl ThreadImpl {
     pub fn get_signal(&self) -> ThreadSignal {
         let state = self.state.lock().unwrap();
         return state.get_signal()
+    }
+
+    pub fn get_thread_func_count(&self) -> usize {
+        return self.state.lock().unwrap().get_sender_cnt();
     }
 }

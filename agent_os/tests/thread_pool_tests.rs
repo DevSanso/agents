@@ -2,8 +2,8 @@ use std::thread::sleep;
 use std::time::Duration;
 use std::{io, ops::Deref};
 
-use agent_os::pool::ThreadPool;
-use agent_os::pool::Pool;
+use agent_os::structure::pool::ThreadPool;
+use agent_os::structure::pool::Pool;
 
 
 
@@ -22,18 +22,21 @@ fn sleep_and_print(args : ()) -> Result<(), String> {
 
 #[test]
 pub fn thread_pool_test() -> io::Result<()>{
-    let tp = ThreadPool::new(1, 4);
+    let tp = ThreadPool::new(3, 6);
     let mut tp_mut = tp.lock().unwrap();
 
-    tp_mut.run_func((), print_ten)?;
-    sleep(Duration::from_secs(1));
     tp_mut.run_func((), sleep_and_print)?;
-    sleep(Duration::from_secs(1));
+    //tp_mut.run_func((), print_ten)?;
+    //sleep(Duration::from_secs(1));
     tp_mut.run_func((), sleep_and_print)?;
-    sleep(Duration::from_secs(1));
+    //sleep(Duration::from_secs(1));
+    tp_mut.run_func((), sleep_and_print)?;
+    tp_mut.run_func((), sleep_and_print)?;
+    tp_mut.run_func((), sleep_and_print)?;
+    //sleep(Duration::from_secs(1));
     tp_mut.run_func((), print_ten)?;
 
-    sleep(Duration::from_secs(1));
+    //sleep(Duration::from_secs(1));
     println!("used count : {}", tp_mut.used_count());
     sleep(Duration::from_secs(20));
 

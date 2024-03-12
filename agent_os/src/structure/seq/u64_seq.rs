@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use crate::utils::seq::Sequence;
+use crate::structure::seq::Sequence;
 
 pub struct U64Sequence {
     current_val : Mutex<u64>

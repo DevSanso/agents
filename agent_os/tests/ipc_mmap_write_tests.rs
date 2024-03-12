@@ -7,8 +7,8 @@ use agent_os::ipc::new_listener;
 use agent_os::ipc::ListenerKind;
 
 use agent_os::utils::format::make_format;
-use agent_os::utils::seq::new_seq;
-use agent_os::utils::seq::SequenceKind;
+use agent_os::structure::seq::new_seq;
+use agent_os::structure::seq::SequenceKind;
 #[test]
 pub fn ipc_mmap_write_test() -> io::Result<()>{
     const MSG : &str= "hello world! ";

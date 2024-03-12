@@ -1,7 +1,7 @@
 use std::sync::Mutex;
 use std::time;
 
-use crate::utils::seq::Sequence;
+use crate::structure::seq::Sequence;
 
 pub struct UnixEpocheSequence {
     unix_time_mut : Mutex<time::Duration>

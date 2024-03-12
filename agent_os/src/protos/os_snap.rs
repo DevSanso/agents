@@ -385,8 +385,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     och\x18\x01\x20\x01(\x04R\tunixEpoch\x12$\n\x05datas\x18\x02\x20\x03(\
     \x0b2\x0e.agent.os.DataR\x05datas*F\n\nDataFormat\x12\n\n\x06NetArp\x10\
     \0\x12\n\n\x06NetDev\x10\x01\x12\x0f\n\x0bNetSockStat\x10\x02\x12\x0f\n\
-    \x0bNetTcp4Stat\x10\x03B#\xaa\x02\x20InfoGatherHub.HubProtos.Agent.Osb\
-    \x06proto3\
+    \x0bNetTcp4Stat\x10\x03BQ\n,devsanso.github.io.HubServer.protos.agent.os\
+    \xaa\x02\x20InfoGatherHub.HubProtos.Agent.Osb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

@@ -7,7 +7,7 @@ use memmap2;
 
 use crate::utils::result::result_cast_to_io_result;
 use crate::ipc::{IpcListener, IpcSendStream};
-use crate::utils::seq::{new_seq, Sequence, SequenceKind};
+use crate::structure::seq::{new_seq, Sequence, SequenceKind};
 use crate::utils::format::make_format;
 
 pub struct MmapListener {

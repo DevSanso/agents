@@ -1,8 +1,8 @@
 use std::io;
 use std::sync::{Mutex, Arc};
 
-use crate::pool;
-use crate::pool::thread_pool::thread_impl::{ThreadImpl,ThreadSignal};
+use crate::structure::pool;
+use crate::structure::pool::thread_pool::thread_impl::{ThreadImpl,ThreadSignal};
 
 #[derive(Debug)]
 pub struct ThreadPool {
@@ -12,8 +12,9 @@ pub struct ThreadPool {
 
 impl Drop for ThreadPool {
     fn drop(&mut self) {
-        for i in 0..self.thread_p.len() {
-            drop(&self.thread_p[i]);
+        for _ in 0..self.thread_p.len() {
+            let t = self.thread_p.pop().unwrap();
+            drop(t);
         }
         self.thread_p.clear();
         self.max = 0;
@@ -25,7 +26,9 @@ impl ThreadPool {
 
         for i in 0..self.thread_p.len() {
             let state = self.thread_p[i].get_signal();
-            if state == ThreadSignal::Idle {
+            let count = self.thread_p[i].get_thread_func_count();
+            
+            if state == ThreadSignal::Idle && count <= 0 {
                 return Some(i);
             }
         }
@@ -61,7 +64,7 @@ impl pool::Pool<(), () , String> for ThreadPool {
     fn run_func<F : FnOnce(()) -> Result<(),String> + Send + 'static>(&mut self, arg : (), f : F) -> io::Result<()> {
 
         if self.alloc_size() >= self.max {
-            return Err(io::Error::new(io::ErrorKind::InvalidInput, "index is out of range"));
+            return Err(io::Error::new(io::ErrorKind::InvalidInput, "run_func - index is out of range"));
         }
         let mut thread_index_opt = self.find_idle();
         

@@ -1510,8 +1510,9 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20\x01(\rR\x03uid\x12,\n\x12zero_window_probes\x18\n\x20\x01(\rR\x10ze\
     roWindowProbes\x12\x14\n\x05inode\x18\x0b\x20\x01(\x04R\x05inode\x12\x10\
     \n\x03etc\x18\x0c\x20\x01(\tR\x03etc\"9\n\tTcp4Stats\x12,\n\x05stats\x18\
-    \x01\x20\x03(\x0b2\x16.agent.os.net.Tcp4StatR\x05statsB'\xaa\x02$InfoGat\
-    herHub.HubProtos.Agent.Os.Netb\x06proto3\
+    \x01\x20\x03(\x0b2\x16.agent.os.net.Tcp4StatR\x05statsB[\n0devsanso.gith\
+    ub.io.HubServer.protos.agent.os.netP\x01\xaa\x02$InfoGatherHub.HubProtos\
+    .Agent.Os.Netb\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
