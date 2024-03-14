@@ -5,6 +5,8 @@ use std::sync::{Mutex, Arc};
 use std::sync::mpsc::{channel, Sender, Receiver, TryRecvError};
 use std::time::Duration;
 
+use crate::utils::convert_to_io_result;
+
 type ThreadFunc = Box<dyn FnOnce(()) -> Result<(),String> + Send>;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -119,7 +121,8 @@ impl ThreadImpl {
         s.incr_sender_cnt();
         drop(s);
         
-        self.func_sender.send(Box::new(thread_func));
+        let ret =self.func_sender.send(thread_func);
+        convert_to_io_result!(result, ret)?;
         Ok(())
     }
 

@@ -12,9 +12,44 @@ use std::io;
 use std::sync::Arc;
 use std::time;
 
+use simplelog::*;
+
 use structure::pool;
 use structure::pool::Pool;
 use structure::buffer;
+
+fn convert_string_to_filter(level: &String) -> LevelFilter {
+    match level.as_str() {
+        "trace" => LevelFilter::Trace,
+        "debug" => LevelFilter::Debug,
+        "info" => LevelFilter::Info,
+        "warn" => LevelFilter::Warn,
+        "error" => LevelFilter::Error,
+        _ => LevelFilter::Error
+    }
+}
+
+fn init_logger(config : &config::Config) -> Result<(), log::SetLoggerError>{
+
+    let loggers = (||{
+        let mut ret :Vec<Box<dyn SharedLogger + 'static>> = vec![];
+
+        ret.push(SimpleLogger::new(LevelFilter::Trace, Config::default()));
+        
+        if config.log_path.is_some() {
+            let level = config.log_level.as_ref().unwrap();
+            ret.push(WriteLogger::new(
+                convert_string_to_filter(level),
+                Config::default(),
+                std::fs::File::create(config.log_path.as_ref().unwrap()).unwrap(),
+            ));
+        }
+
+        ret
+    })();
+    
+    CombinedLogger::init(loggers)
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config_path = env::args().skip(1).next();
@@ -27,6 +62,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let config = config::read_config(config_path.unwrap())?;
+
+    init_logger(&config)?;
 
     let mut ipc_listener =
         ipc::new_listener(ipc::ListenerKind::Mmap(config.ipc_path, config.ipc_size))?;

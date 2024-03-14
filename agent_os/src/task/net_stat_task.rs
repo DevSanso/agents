@@ -84,5 +84,5 @@ fn os_details_net_stat_thread(buf: Arc<RwLock<dyn BufferAdder<Data> + Sync + Sen
         }
     }
 
-    Ok(())
+    //Ok(())
 }

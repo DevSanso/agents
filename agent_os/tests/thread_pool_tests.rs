@@ -1,20 +1,20 @@
 use std::thread::sleep;
 use std::time::Duration;
-use std::{io, ops::Deref};
+use std::io;
 
 use agent_os::structure::pool::ThreadPool;
 use agent_os::structure::pool::Pool;
 
 
 
-fn print_ten(args : ()) -> Result<(),String>{
+fn print_ten(_ : ()) -> Result<(),String>{
     for i in 0..10 {
         println!("print_ten : {}",i);
     }
     Ok(())
 }
 
-fn sleep_and_print(args : ()) -> Result<(), String> {
+fn sleep_and_print(_ : ()) -> Result<(), String> {
     std::thread::sleep(std::time::Duration::from_secs(10));
     println!("sleep_and_print");
     Ok(())

@@ -61,7 +61,7 @@ impl ThreadPool {
 }
 
 impl pool::Pool<(), () , String> for ThreadPool {
-    fn run_func<F : FnOnce(()) -> Result<(),String> + Send + 'static>(&mut self, arg : (), f : F) -> io::Result<()> {
+    fn run_func<F : FnOnce(()) -> Result<(),String> + Send + 'static>(&mut self, _ : (), f : F) -> io::Result<()> {
 
         if self.alloc_size() >= self.max {
             return Err(io::Error::new(io::ErrorKind::InvalidInput, "run_func - index is out of range"));

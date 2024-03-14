@@ -59,5 +59,5 @@ fn ipc_send_task(
         result_change_err_is_string(stream.send(pack_data.as_slice()))?;
     }
 
-    Ok(())
+    //Ok(())
 }
