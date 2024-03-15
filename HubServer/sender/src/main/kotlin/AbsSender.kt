@@ -1,7 +1,7 @@
 package devsanso.github.io.HubServer.sender
 
 import devsanso.github.io.HubServer.common.data.DataCotent
-import devsanso.github.io.HubServer.global.GlobalSingleTon
+import devsanso.github.io.HubServer.global.LoggerSingleTon
 
 abstract class AbsSender {
     protected abstract fun sendImpl(data: DataCotent)
@@ -10,7 +10,7 @@ abstract class AbsSender {
         try {
             sendImpl(data)
         }catch(e : Exception) {
-            GlobalSingleTon.logger.error(javaClass, e.message ?: "")
+            LoggerSingleTon.logger.error(javaClass, e.message ?: "")
             throw e
         }
     }

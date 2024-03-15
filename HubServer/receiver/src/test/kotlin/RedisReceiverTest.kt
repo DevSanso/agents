@@ -2,8 +2,8 @@
 import org.junit.jupiter.api.*
 import redis.clients.jedis.*
 
-import devsanso.github.io.receiver.RedisReceiver
-import devsanso.github.io.receiver.data.RedisReceiverConfig
+import devsanso.github.io.HubServer.receiver.RedisReceiver
+import devsanso.github.io.HubServer.receiver.data.RedisReceiverConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

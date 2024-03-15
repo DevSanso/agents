@@ -21,7 +21,6 @@ dependencies {
     implementation(project(":global"))
     implementation(project(":sender"))
     implementation(project(":receiver"))
-    implementation(project(":protos"))
 }
 
 application {

@@ -4,7 +4,7 @@ import devsanso.github.io.HubServer.common.adapter.logger.ILoggerAdapter
 import devsanso.github.io.HubServer.common.adapter.logger.LogLevel
 import devsanso.github.io.HubServer.common.loader.LoggerLoader
 
-object GlobalSingleTon {
+object LoggerSingleTon {
     val props : Map<String, String> = mapOf()
 
     private fun String.logLevelConvert() : LogLevel = when {
