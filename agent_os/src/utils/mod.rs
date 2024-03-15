@@ -25,8 +25,18 @@ macro_rules! convert_to_io_result {
             #[cfg(test)] use agent_os::utils::option::opt_cast_to_io_result;
             #[cfg(not(test))] use crate::utils::option::opt_cast_to_io_result;
 
-            if $opt.is_none()  {debug!("FILE:{} - LINE:{} - Option Is None - MSG:{}", file!(), line!() - 2, $msg)}
+            if $opt.is_none()  {debug!("[FILE:{}] - [LINE:{}] - Option Is None - MSG:{}", file!(), line!(), $msg)}
             opt_cast_to_io_result($opt, $msg)
+        }
+    };
+    (option, $opt:expr, $msg:expr) => {
+        {
+            use log::*;
+            #[cfg(test)] use agent_os::utils::option::opt_cast_to_io_result;
+            #[cfg(not(test))] use crate::utils::option::opt_cast_to_io_result;
+            let opt_ret = $opt;
+            if opt_ret.is_none()  {debug!("[FILE:{}] - [LINE:{}] - Option Is None - MSG:{}", file!(), line!(), $msg)}
+            opt_cast_to_io_result(opt_ret, $msg)
         }
     };
 
@@ -36,7 +46,7 @@ macro_rules! convert_to_io_result {
             #[cfg(test)] use agent_os::utils::result::result_cast_to_io_result;
             #[cfg(not(test))] use crate::utils::result::result_cast_to_io_result;
 
-            if $ret.is_err() {debug!("FILE:{} - LINE:{} - Result Is Error", file!(), line!() - 2)}
+            if $ret.is_err() {debug!("[FILE:{}] - [LINE:{}] - Result Is Error", file!(), line!())}
             result_cast_to_io_result($ret)
         }
     };

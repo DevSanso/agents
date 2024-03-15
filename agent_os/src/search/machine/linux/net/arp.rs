@@ -1,8 +1,7 @@
 use std::io;
 use std::fs;
 
-use crate::utils::option::opt_cast_to_io_result;
-use crate::utils::result::result_cast_to_io_result;
+use crate::utils::convert_to_io_result;
 use crate::protos::net::{ArpInfo,ArpInfos};
 
 
@@ -15,22 +14,22 @@ pub fn read_arp_info() -> io::Result<ArpInfos> {
                                                         .filter(|x| x.len() > 0);
 
     let arp_vec : io::Result<Vec<ArpInfo>> = data.map(|line| {
-        let mut tok = line.split_whitespace();
+        let mut tok = line.split_whitespace().peekable();
+        let ip_address =  convert_to_io_result!(option ,tok.next(),"arp ip_address is null")?.to_string();
 
-        let ip_address =  opt_cast_to_io_result(tok.next(),"arp ip_address is null")?.to_string();
-
-        let hw_type = result_cast_to_io_result(
-            u32::from_str_radix(
-                opt_cast_to_io_result(tok.next(),"arp hw_type is null")?
-                    .replace("0x", "")
-                    .as_str(),
-                 16)
+        let hw_type_str : &'_ str = convert_to_io_result!(option, tok.next(),"arp hw_type is null")?;
+        let hw_type = convert_to_io_result!(result, 
+            u32::from_str_radix(hw_type_str 
+                .replace("0x", "")
+                .as_str(),
+            16)
         )?;
 
-        let flags = opt_cast_to_io_result(tok.next(),"arp flags is null")?.to_string();
+        let flags = convert_to_io_result!(option, tok.next(),"arp flags is null")?.to_string();
+      
         tok.next();
         tok.next();
-        let device = opt_cast_to_io_result(tok.next(),"arp device is null")?.to_string();
+        let device = convert_to_io_result!(option, tok.next(),"arp device is null")?.to_string();
         let mut arp_info = ArpInfo::new();
         arp_info.ip_address = ip_address;
         arp_info.flags = flags;
