@@ -14,7 +14,7 @@ pub fn read_arp_info() -> io::Result<ArpInfos> {
                                                         .filter(|x| x.len() > 0);
 
     let arp_vec : io::Result<Vec<ArpInfo>> = data.map(|line| {
-        let mut tok = line.split_whitespace().peekable();
+        let mut tok = line.split_whitespace();
         let ip_address =  convert_to_io_result!(option ,tok.next(),"arp ip_address is null")?.to_string();
 
         let hw_type_str : &'_ str = convert_to_io_result!(option, tok.next(),"arp hw_type is null")?;
@@ -26,10 +26,10 @@ pub fn read_arp_info() -> io::Result<ArpInfos> {
         )?;
 
         let flags = convert_to_io_result!(option, tok.next(),"arp flags is null")?.to_string();
-      
         tok.next();
         tok.next();
         let device = convert_to_io_result!(option, tok.next(),"arp device is null")?.to_string();
+        
         let mut arp_info = ArpInfo::new();
         arp_info.ip_address = ip_address;
         arp_info.flags = flags;

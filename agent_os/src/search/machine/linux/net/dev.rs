@@ -1,7 +1,7 @@
 use std::io;
 use std::fs;
 
-use crate::utils::result::result_cast_to_io_result;
+use crate::utils::convert_to_io_result;
 use crate::protos::net::{NetDevInfo,NetDevInfos};
 
 pub fn read_net_dev_info() -> io::Result<NetDevInfos> {
@@ -16,59 +16,59 @@ pub fn read_net_dev_info() -> io::Result<NetDevInfos> {
         
         let interface = tok[0].trim_matches(':').to_string();
 
-        let rx_bytes = result_cast_to_io_result(
+        let rx_bytes = convert_to_io_result!(result,
             tok[1].parse::<u64>()
         )?;
 
-        let rx_packets =  result_cast_to_io_result(
+        let rx_packets =  convert_to_io_result!(result,
             tok[2].parse::<u64>()
         )?;
 
-        let rx_errs =  result_cast_to_io_result(
+        let rx_errs =  convert_to_io_result!(result,
             tok[3].parse::<u64>()
         )?;
 
-        let rx_drop =  result_cast_to_io_result(
+        let rx_drop =  convert_to_io_result!(result,
             tok[4].parse::<u64>()
         )?;
 
-        let rx_fifo =  result_cast_to_io_result(
+        let rx_fifo =  convert_to_io_result!(result,
             tok[5].parse::<u64>()
         )?;
 
-        let rx_frame =  result_cast_to_io_result(
+        let rx_frame =  convert_to_io_result!(result,
             tok[6].parse::<u64>()
         )?;
 
-        let rx_compressed =  result_cast_to_io_result(
+        let rx_compressed =  convert_to_io_result!(result,
             tok[7].parse::<u64>()
         )?;
 
-        let tx_bytes = result_cast_to_io_result(
+        let tx_bytes = convert_to_io_result!(result,
             tok[9].parse::<u64>()
         )?;
 
-        let tx_packets =  result_cast_to_io_result(
+        let tx_packets =  convert_to_io_result!(result,
             tok[10].parse::<u64>()
         )?;
 
-        let tx_errs =  result_cast_to_io_result(
+        let tx_errs =  convert_to_io_result!(result,
             tok[11].parse::<u64>()
         )?;
 
-        let tx_drop =  result_cast_to_io_result(
+        let tx_drop =  convert_to_io_result!(result,
             tok[12].parse::<u64>()
         )?;
 
-        let tx_fifo =  result_cast_to_io_result(
+        let tx_fifo =  convert_to_io_result!(result,
             tok[13].parse::<u64>()
         )?;
 
-        let tx_frame =  result_cast_to_io_result(
+        let tx_frame =  convert_to_io_result!(result,
             tok[14].parse::<u64>()
         )?;
 
-        let tx_compressed =  result_cast_to_io_result(
+        let tx_compressed =  convert_to_io_result!(result,
             tok[15].parse::<u64>()
         )?;
         let mut devi = NetDevInfo::new();

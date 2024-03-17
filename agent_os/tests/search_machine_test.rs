@@ -7,7 +7,7 @@ use agent_os::search::machine;
 pub fn machine_test() -> io::Result<()>{
     let _ = CombinedLogger::init(vec![SimpleLogger::new(LevelFilter::Trace, Config::default())]);
     let m = machine::get_machine()?;
-    for _i in 0..100 {
+    for _i in 0..1000 {
         m.os_net_stat()?;
     }
     Ok(())
