@@ -17,6 +17,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     compileOnly(project(":common"))
     implementation(project(":global"))
     implementation(project(":sender"))
