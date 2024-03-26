@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubGlobal", "HubGlobal\HubG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubProtos", "HubProtos\HubProtos.csproj", "{A89B800E-1052-4947-8638-A0551D1D9843}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubCommonTests", "HubCommonTests\HubCommonTests.csproj", "{B24A0513-584A-4996-B015-7C6FAF395BDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HubGlobalTests", "HubGlobalTests\HubGlobalTests.csproj", "{91BB1CAD-BE2A-4491-94ED-0960A6744DE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,5 +44,13 @@ Global
 		{A89B800E-1052-4947-8638-A0551D1D9843}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A89B800E-1052-4947-8638-A0551D1D9843}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A89B800E-1052-4947-8638-A0551D1D9843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B24A0513-584A-4996-B015-7C6FAF395BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B24A0513-584A-4996-B015-7C6FAF395BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B24A0513-584A-4996-B015-7C6FAF395BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B24A0513-584A-4996-B015-7C6FAF395BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91BB1CAD-BE2A-4491-94ED-0960A6744DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91BB1CAD-BE2A-4491-94ED-0960A6744DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91BB1CAD-BE2A-4491-94ED-0960A6744DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91BB1CAD-BE2A-4491-94ED-0960A6744DE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -22,7 +22,7 @@ public class MemMapClient : ISnapClient
         using var file = MemoryMappedFile.CreateFromFile(File.Open(this.path, FileMode.Open, FileAccess.Read), 
             null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
 
-        using var accessor = file!.CreateViewStream(0, this.size, MemoryMappedFileAccess.CopyOnWrite);
+        using var accessor = file!.CreateViewStream(0, this.size, MemoryMappedFileAccess.Read);
 
         lock(lockObj)
             accessor!.Read(buffer!, 0, size);

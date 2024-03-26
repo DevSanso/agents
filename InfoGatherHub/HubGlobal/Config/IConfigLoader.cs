@@ -27,6 +27,7 @@ public static class IConfigLoaderCaller
         string? used = loader.GetIsUsed();
 
         if(used == "tomi") return loader.GetToml<T>();
+        else if(used == "temp") return loader.GetTemp<T>();
 
         throw new NullReferenceException("Global Config is not setting");
     }
