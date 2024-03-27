@@ -3,7 +3,6 @@ namespace InfoGatherHub.HubSender.Ipc;
 using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
-using K4os.Compression.LZ4.Internal;
 
 public class MemMapClient : ISnapClient
 {
@@ -19,13 +18,13 @@ public class MemMapClient : ISnapClient
     }
     public void FetchSnapData()
     {
-        using var file = MemoryMappedFile.CreateFromFile(File.Open(this.path, FileMode.Open, FileAccess.Read), 
-            null, 0, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
+        using var f = File.Open(this.path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var file = MemoryMappedFile.CreateFromFile(f, null, this.size, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
 
-        using var accessor = file!.CreateViewStream(0, this.size, MemoryMappedFileAccess.Read);
+        using var accessor = file!.CreateViewAccessor(0, this.size, MemoryMappedFileAccess.Read);
 
         lock(lockObj)
-            accessor!.Read(buffer!, 0, size);
+            accessor!.ReadArray(0, buffer!, 0, this.size);     
         
     }
     public byte[]? GetSnapData()
@@ -33,8 +32,7 @@ public class MemMapClient : ISnapClient
         byte []ret = new byte[size];
         
         lock(lockObj)
-            ret.CopyTo(this.buffer!, 0);
-        
+            buffer!.CopyTo(ret, 0);
 
         return ret;
     }
